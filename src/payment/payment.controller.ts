@@ -21,8 +21,10 @@ export class PaymentController {
 
     const stripeSignature = request.headers['stripe-signature'];
     //const stripeSignature = 'sdfs'
-
-    const endpointSecret = paymentPayload.secret
+    // @ts-ignore
+    const endpointSecret = paymentPayload.data.object.client_secret
+    console.log(stripeSignature)
+    console.log(endpointSecret)
 
     return this.paymentService.paymentSuccess(stripeSignature, paymentPayload, endpointSecret, response)
     
