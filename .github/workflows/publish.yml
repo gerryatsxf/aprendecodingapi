@@ -29,8 +29,10 @@ jobs:
       - name: Create .env file
         run: touch .env
 
-      - name: Setup STRIPE_SECRET_KEY
-        run: echo ${{ secrets.STRIPE_SECRET_KEY }} >> .env
+      - name: Setup Stripe secrets
+        run: |
+          echo ${{ secrets.STRIPE_SECRET_KEY }} >> .env 
+          echo ${{ secrets.STRIPE_PAYMENT_SUCCESS_WEBHOOK_SECRET_KEY }} >> .env
 
       - name: Restart server application
         run: pm2 restart aprendecodigoapi
