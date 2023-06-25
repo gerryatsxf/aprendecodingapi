@@ -17,11 +17,9 @@ export class PaymentService {
 
   async paymentSuccess(body, stripeSignature, endpointSecret, response){
     let event;
-    //const strBody = JSON.stringify(body)
-    const strBody = JSON.stringify(body)
-    console.log({strBody})
+    console.log(body)
     try {
-      event = stripe.webhooks.constructEvent(strBody, stripeSignature, endpointSecret);
+      event = stripe.webhooks.constructEvent(body, stripeSignature, endpointSecret);
     } catch (err) {
       response.status(400).send(`Webhook Error: ${err.message}`);
       return;
