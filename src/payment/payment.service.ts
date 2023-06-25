@@ -31,7 +31,7 @@ export class PaymentService {
     try {
       const paymentIntentId = event.data.object.id
       console.log({paymentIntentId})
-      intent = stripe.paymentIntents.retrieve(event.data.object.id)
+      intent = await stripe.paymentIntents.retrieve(event.data.object.id)
       console.log({intent})
 
     } catch (err){
