@@ -18,8 +18,8 @@ export class PaymentService {
   async paymentSuccess(body, stripeSignature, endpointSecret, response){
     let event;
     //const strBody = JSON.stringify(body)
-    const strBody = body
-    console.log({strBody})
+    const strBody = JSON.stringify(body)
+    console.log({body})
     try {
       event = stripe.webhooks.constructEvent(strBody, stripeSignature, endpointSecret);
     } catch (err) {
