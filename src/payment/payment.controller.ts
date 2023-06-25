@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res, RawBodyRequest } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
@@ -15,7 +15,7 @@ export class PaymentController {
 
   @Post('/success')
   paymentSuccess(
-    @Req() request: Request,
+    @Req() request: RawBodyRequest<Request>,
     @Res() response: Response,
     @Body() paymentPayload: CreatePaymentDto) {
 
@@ -26,7 +26,7 @@ export class PaymentController {
     console.log({stripeSignature})
     console.log({endpointSecret})
 
-    return this.paymentService.paymentSuccess(request.body, stripeSignature, endpointSecret, response)
+    return this.paymentService.paymentSuccess(request.rawBody, stripeSignature, endpointSecret, response)
     
   }
 
