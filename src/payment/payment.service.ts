@@ -11,17 +11,14 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 
 @Injectable()
 export class PaymentService {
-  create(createPaymentDto: CreatePaymentDto) {
-    return 'This action adds a new payment';
-  }
 
   async paymentSuccess(body, stripeSignature, endpointSecret, response){
     let event;
-    console.log(body)
+
     try {
       event = stripe.webhooks.constructEvent(body, stripeSignature, endpointSecret);
     } catch (err) {
-      response.status(400).send(`Webhook Error: ${err.message}`);
+      response.sendStatus(400).send(`Webhook Error: ${err.message}`);
       return;
     }
   
@@ -30,7 +27,6 @@ export class PaymentService {
       case 'payment_intent.succeeded':
         const paymentIntentSucceeded = event.data.object;
         // Then define and call a function to handle the event payment_intent.succeeded
-        console.log(paymentIntentSucceeded)
         break;
       // ... handle other event types
       default:
@@ -38,23 +34,7 @@ export class PaymentService {
     }
   
     // Return a 200 response to acknowledge receipt of the event
-    response.send(200);
+    response.sendStatus(200);
   }
 
-  findAll() {
-    return stripe.paymentIntents.list()
-    
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} payment`;
-  }
-
-  update(id: number, updatePaymentDto: UpdatePaymentDto) {
-    return `This action updates a #${id} payment`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} payment`;
-  }
 }
