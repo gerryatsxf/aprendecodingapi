@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
@@ -11,6 +11,24 @@ export class PaymentController {
   create(@Body() createPaymentDto: CreatePaymentDto) {
     return this.paymentService.create(createPaymentDto);
   }
+
+
+  @Post('/success')
+  paymentSuccess(
+    @Req() request: Request,
+    @Res() response: Response,
+    @Body() paymentPayload: CreatePaymentDto) {
+
+    const stripeSignature = request.headers['stripe-signature'];
+    //const stripeSignature = 'sdfs'
+
+    const endpointSecret = paymentPayload.secret
+
+    return this.paymentService.paymentSuccess(stripeSignature, paymentPayload, endpointSecret, response)
+    
+  }
+
+
 
   @Get()
   findAll() {
