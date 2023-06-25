@@ -27,6 +27,17 @@ export class PaymentService {
       response.sendStatus(400).send(`Webhook Error: ${err.message}`);
       return;
     }
+    let intent
+    try {
+      const paymentIntentId = event.data.object.id
+      console.log({paymentIntentId})
+      intent = stripe.paymentIntents.retrieve(event.data.object.id)
+      console.log({intent})
+
+    } catch (err){
+      response.sendStatus(400).send(`SDK Call Error: ${err.message}`);
+      return;  
+    }
   
     // Handle the event
     switch (event.type) {
