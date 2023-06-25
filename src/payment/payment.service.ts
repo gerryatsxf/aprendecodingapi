@@ -15,9 +15,10 @@ export class PaymentService {
     return 'This action adds a new payment';
   }
 
-  async paymentSuccess(stripeSignature, body, endpointSecret, response){
+  async paymentSuccess(body, stripeSignature, endpointSecret, response){
     let event;
-    const strBody = JSON.stringify(body)
+    //const strBody = JSON.stringify(body)
+    const strBody = body
     console.log({strBody})
     try {
       event = stripe.webhooks.constructEvent(strBody, stripeSignature, endpointSecret);

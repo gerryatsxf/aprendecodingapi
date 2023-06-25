@@ -26,7 +26,7 @@ export class PaymentController {
     console.log({stripeSignature})
     console.log({endpointSecret})
 
-    return this.paymentService.paymentSuccess(stripeSignature, paymentPayload, endpointSecret, response)
+    return this.paymentService.paymentSuccess(request.body, stripeSignature, endpointSecret, response)
     
   }
 
