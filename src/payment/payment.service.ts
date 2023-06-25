@@ -3,6 +3,7 @@ import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import Stripe from 'stripe';
 import 'dotenv/config'
+import { NotificationService } from 'src/notification/notification.service';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2022-11-15',
@@ -12,11 +13,16 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 @Injectable()
 export class PaymentService {
 
-  async paymentSuccess(body, stripeSignature, endpointSecret, response){
+  constructor(
+    private notificationService: NotificationService
+  ){}
+
+  async paymentSuccess(request, stripeSignature, endpointSecret, response){
     let event;
+    console.log(request.body)
 
     try {
-      event = stripe.webhooks.constructEvent(body, stripeSignature, endpointSecret);
+      event = stripe.webhooks.constructEvent(request.rawBody, stripeSignature, endpointSecret);
     } catch (err) {
       response.sendStatus(400).send(`Webhook Error: ${err.message}`);
       return;
