@@ -22,7 +22,7 @@ export class PaymentController {
     const stripeSignature = request.headers['stripe-signature'];
     //const stripeSignature = 'sdfs'
     // @ts-ignore
-    const endpointSecret = paymentPayload.data.object.client_secret
+    const endpointSecret = process.env.STRIPE_PAYMENT_SUCCESS_WEBHOOK_SECRET_KEY
     console.log({stripeSignature})
     console.log({endpointSecret})
 
