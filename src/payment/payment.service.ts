@@ -54,6 +54,7 @@ export class PaymentService {
       case 'checkout.session.completed':
         const sessionCompleted = event.data.object;
         const customerEmail = sessionCompleted.customer_details.email
+        console.log(customerEmail)
         const createNotification = new CreateNotificationDto
         createNotification.email = customerEmail
         this.notificationService.create(createNotification)
