@@ -37,5 +37,4 @@ jobs:
           echo NYLAS_CLIENT_SECRET=${{ secrets.NYLAS_CLIENT_SECRET }} >> .env
           echo NYLAS_MAIN_ACCOUNT_ACCESS_TOKEN=${{ secrets.NYLAS_MAIN_ACCOUNT_ACCESS_TOKEN }} >> .env
       
-      - name: Restart server application
-        run: pm2 restart aprendecodigoapi
+
