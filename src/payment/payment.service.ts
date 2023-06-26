@@ -52,6 +52,7 @@ export class PaymentService {
 
       case 'checkout.session.completed':
         const sessionCompleted = event.data.object;
+        console.log(sessionCompleted)
         break;
       // ... handle other event types
       default:
