@@ -4,6 +4,7 @@ import { UpdatePaymentDto } from './dto/update-payment.dto';
 import Stripe from 'stripe';
 import 'dotenv/config'
 import { NotificationService } from 'src/notification/notification.service';
+import { CreateNotificationDto } from 'src/notification/dto/create-notification.dto';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2022-11-15',
@@ -41,17 +42,21 @@ export class PaymentService {
   
     // Handle the event
     switch (event.type) {
-      case 'payment_intent.succeeded':
-        const paymentIntentSucceeded = event.data.object;
-        // Then define and call a function to handle the event payment_intent.succeeded
-        break;
+      // case 'payment_intent.succeeded':
+      //   const paymentIntentSucceeded = event.data.object;
+      //   // Then define and call a function to handle the event payment_intent.succeeded
+      //   break;
 
-      case 'checkout.session.async_payment_succeeded':
-        const asyncPaymentSucceeded = event.data.object;
-        break;
+      // case 'checkout.session.async_payment_succeeded':
+      //   const asyncPaymentSucceeded = event.data.object;
+      //   break;
 
       case 'checkout.session.completed':
         const sessionCompleted = event.data.object;
+        const customerEmail = sessionCompleted.customer_details.email
+        const createNotification = new CreateNotificationDto
+        createNotification.email = customerEmail
+        this.notificationService.create(createNotification)
         console.log(sessionCompleted)
         break;
       // ... handle other event types
