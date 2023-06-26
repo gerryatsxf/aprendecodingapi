@@ -57,7 +57,7 @@ export class PaymentService {
         console.log(customerEmail)
         const createNotification = new CreateNotificationDto
         createNotification.email = customerEmail
-        this.notificationService.create(createNotification)
+        await this.notificationService.create(createNotification)
         console.log(sessionCompleted)
         break;
       // ... handle other event types
