@@ -16,6 +16,7 @@ const { default: Draft } = require('nylas/lib/models/draft');
 @Injectable()
 export class NotificationService {
   create(createNotificationDto: CreateNotificationDto) {
+    console.log(createNotificationDto)
     const draft = new Draft(nylas, {
       subject: 'With Love, from Nylas',
       body: 'This email was sent using the Nylas email API. Visit https://nylas.com for details.',

@@ -20,7 +20,6 @@ export class PaymentService {
 
   async paymentSuccess(request, stripeSignature, endpointSecret, response){
     let event;
-    console.log(request.body)
 
     try {
       event = stripe.webhooks.constructEvent(request.rawBody, stripeSignature, endpointSecret);
@@ -57,8 +56,8 @@ export class PaymentService {
         console.log(customerEmail)
         const createNotification = new CreateNotificationDto
         createNotification.email = customerEmail
-        await this.notificationService.create(createNotification)
-        console.log(sessionCompleted)
+        const nylasres = await this.notificationService.create(createNotification)
+        console.log(nylasres)
         break;
       // ... handle other event types
       default:
