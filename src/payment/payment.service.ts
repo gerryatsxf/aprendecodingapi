@@ -27,17 +27,17 @@ export class PaymentService {
       response.sendStatus(400).send(`Webhook Error: ${err.message}`);
       return;
     }
-    let intent
-    try {
-      const paymentIntentId = event.data.object.id
-      console.log({paymentIntentId})
-      intent = await stripe.paymentIntents.retrieve(event.data.object.id)
-      console.log({intent})
+    // let intent
+    // try {
+    //   const paymentIntentId = event.data.object.id
+    //   console.log({paymentIntentId})
+    //   intent = await stripe.paymentIntents.retrieve(event.data.object.id)
+    //   console.log({intent})
 
-    } catch (err){
-      response.sendStatus(400).send(`SDK Call Error: ${err.message}`);
-      return;  
-    }
+    // } catch (err){
+    //   response.sendStatus(400).send(`SDK Call Error: ${err.message}`);
+    //   return;  
+    // }
   
     // Handle the event
     switch (event.type) {
@@ -45,6 +45,9 @@ export class PaymentService {
         const paymentIntentSucceeded = event.data.object;
         // Then define and call a function to handle the event payment_intent.succeeded
         break;
+
+      case 'checkout.session.async_payment_succeeded':
+        const asyncPaymentSucceeded = event.data.object;
       // ... handle other event types
       default:
         console.log(`Unhandled event type ${event.type}`);
