@@ -48,6 +48,11 @@ export class PaymentService {
 
       case 'checkout.session.async_payment_succeeded':
         const asyncPaymentSucceeded = event.data.object;
+        break;
+
+      case 'checkout.session.completed':
+        const sessionCompleted = event.data.object;
+        break;
       // ... handle other event types
       default:
         console.log(`Unhandled event type ${event.type}`);
