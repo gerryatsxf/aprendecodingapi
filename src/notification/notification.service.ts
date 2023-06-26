@@ -11,7 +11,7 @@ Nylas.config({
 });
 
 const nylas = Nylas.with(process.env.NYLAS_MAIN_ACCOUNT_ACCESS_TOKEN);
-const { default: Draft } = require('nylas/lib/models/draft');
+const { default: Draft } = require('nylas/lib/models/draft'); 
 
 @Injectable()
 export class NotificationService {
