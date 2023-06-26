@@ -1,5 +1,5 @@
 export class CreatePaymentDto {
 
-    secret: string;
+    secret: string; 
     
 }
