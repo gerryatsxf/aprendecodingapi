@@ -18,8 +18,8 @@ export class NotificationService {
   create(createNotificationDto: CreateNotificationDto) {
     console.log(createNotificationDto)
     const draft = new Draft(nylas, {
-      subject: 'With Love, from Nylas',
-      body: 'This email was sent using the Nylas email API. Hello foodev.',
+      subject: '¡Hola! Gracias por agendar',
+      body: 'Te damos un cálido saludo de parte de aprendecoding.com :) Has agendado una sesión de asesoría para el XX de XX del XXXX a las XX:XX pm. Este es el link de la reunión:',
       to: [{ name: 'My Nylas Friend', email: createNotificationDto.email }]
     });
     return draft.send();
