@@ -23,12 +23,12 @@ export class NotificationService {
       subject: `¡Hola, ${notificationRequest.guestName}! Gracias por agendar`,
       body: `
         Nos da mucho gusto saludarte, ${notificationRequest.guestName}. 
-        \n Te damos un cálido saludo de parte de aprendecoding.com :) 
-        \n Has agendado una sesión de asesoría para el XX de XX del XXXX a las XX:XX pm. 
-        \n Más abajo te compartimos el link de la reunión. \n 
-        \n Te esperamos! 
-        \n
-        \n Link de videollamada: ${meeting._links.guest_url.href}`,
+        \n<br> Te damos un cálido saludo de parte de aprendecoding.com :) 
+        \n<br> Has agendado una sesión de asesoría para el XX de XX del XXXX a las XX:XX pm. 
+        \n<br> Más abajo te compartimos el link de la reunión. \n 
+        \n<br> Te esperamos! 
+        \n<br>
+        \n<br> Link de videollamada: ${meeting._links.guest_url.href}`,
       to: [{ name: notificationRequest.guestName, email: notificationRequest.email }]
     });
     return draft.send()
