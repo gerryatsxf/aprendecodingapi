@@ -9,7 +9,7 @@ export class MeetingController {
 
   @Post()
   create(@Body() createMeetingDto: CreateMeetingDto) {
-    return this.meetingService.create(createMeetingDto);
+    return this.meetingService.create('Rich');
   }
 
   @Get()

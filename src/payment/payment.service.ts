@@ -19,6 +19,12 @@ export class PaymentService {
   ){}
 
   async paymentSuccess(request, stripeSignature, endpointSecret, response){
+    const createNotification = new CreateNotificationDto
+
+    createNotification.email = 'test.lps.emails@gmail.com'
+    const nylasres = await this.notificationService.create(createNotification)
+
+
     let event;
 
     try {
@@ -27,33 +33,12 @@ export class PaymentService {
       response.sendStatus(400).send(`Webhook Error: ${err.message}`);
       return;
     }
-    // let intent
-    // try {
-    //   const paymentIntentId = event.data.object.id
-    //   console.log({paymentIntentId})
-    //   intent = await stripe.paymentIntents.retrieve(event.data.object.id)
-    //   console.log({intent})
 
-    // } catch (err){
-    //   response.sendStatus(400).send(`SDK Call Error: ${err.message}`);
-    //   return;  
-    // }
-  
-    // Handle the event
     switch (event.type) {
-      // case 'payment_intent.succeeded':
-      //   const paymentIntentSucceeded = event.data.object;
-      //   // Then define and call a function to handle the event payment_intent.succeeded
-      //   break;
-
-      // case 'checkout.session.async_payment_succeeded':
-      //   const asyncPaymentSucceeded = event.data.object;
-      //   break;
 
       case 'checkout.session.completed':
         const sessionCompleted = event.data.object;
         const customerEmail = sessionCompleted.customer_details.email
-        console.log(customerEmail)
         const createNotification = new CreateNotificationDto
         createNotification.email = customerEmail
         const nylasres = await this.notificationService.create(createNotification)
