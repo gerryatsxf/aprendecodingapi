@@ -40,7 +40,7 @@ jobs:
       - name: Setup Vonage variables and secrets
         run: |
           echo VONAGE_JWT_365_DAYS=${{ secrets.VONAGE_JWT_365_DAYS }} >> .env 
-          echo VONAGE_API_BASE_URL=${{ $VONAGE_API_BASE_URL }} >> .env 
+          echo VONAGE_API_BASE_URL=${{ vars.VONAGE_API_BASE_URL }} >> .env 
 
       - name: Restart server application
         run: pm2 restart aprendecodingapi
