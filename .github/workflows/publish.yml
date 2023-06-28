@@ -38,6 +38,7 @@ jobs:
           echo NYLAS_MAIN_ACCOUNT_ACCESS_TOKEN=${{ secrets.NYLAS_MAIN_ACCOUNT_ACCESS_TOKEN }} >> .env
       
       - name: Setup Vonage variables and secrets
+        run: |
           echo VONAGE_JWT_365_DAYS=${{ secrets.VONAGE_JWT_365_DAYS }} >> .env 
           echo VONAGE_API_BASE_URL=${{ env.VONAGE_API_BASE_URL }} >> .env 
 
