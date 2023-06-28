@@ -25,7 +25,7 @@ export class NotificationService {
     console.log(meeting)
     const draft = new Draft(nylas, {
       subject: '¡Hola! Gracias por agendar',
-      body: 'Te damos un cálido saludo de parte de aprendecoding.com :) Has agendado una sesión de asesoría para el XX de XX del XXXX a las XX:XX pm. Este es el link de la reunión: ' + meeting._links.guest_url,
+      body: 'Te damos un cálido saludo de parte de aprendecoding.com :) Has agendado una sesión de asesoría para el XX de XX del XXXX a las XX:XX pm. Este es el link de la reunión: ' + meeting._links.guest_url.href,
       to: [{ name: 'My Nylas Friend', email: createNotificationDto.email }]
     });
     return draft.send()
