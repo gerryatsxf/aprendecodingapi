@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateNotificationDto } from './dto/create-notification.dto';
-import { UpdateNotificationDto } from './dto/update-notification.dto';
-
+import { SendNotificationRequestDto } from './dto/send-notification-request.dto';
 import 'dotenv/config';
 import { MeetingService } from 'src/meeting/meeting.service';
 const Nylas = require('nylas');
@@ -19,14 +17,12 @@ export class NotificationService {
 
   constructor(private readonly meetingService: MeetingService) {}
 
-  async sendNotification(createNotificationDto: CreateNotificationDto) {
-    console.log(createNotificationDto)
+  async sendNotification(notificationRequest: SendNotificationRequestDto) {
     const meeting = await this.meetingService.createMeeting()
-    console.log(meeting)
     const draft = new Draft(nylas, {
       subject: '¡Hola! Gracias por agendar',
       body: 'Te damos un cálido saludo de parte de aprendecoding.com :) Has agendado una sesión de asesoría para el XX de XX del XXXX a las XX:XX pm. Este es el link de la reunión: ' + meeting._links.guest_url.href,
-      to: [{ name: 'My Nylas Friend', email: createNotificationDto.email }]
+      to: [{ name: notificationRequest.guestName, email: notificationRequest.email }]
     });
     return draft.send()
   }

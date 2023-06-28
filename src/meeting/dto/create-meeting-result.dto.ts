@@ -1,4 +1,4 @@
-export class CreateMeetingDto {
+export class CreateMeetingResultDto {
     id: string;
     display_name: string;
     metadata: any;

@@ -4,7 +4,7 @@ import { UpdatePaymentDto } from './dto/update-payment.dto';
 import Stripe from 'stripe';
 import 'dotenv/config'
 import { NotificationService } from 'src/notification/notification.service';
-import { CreateNotificationDto } from 'src/notification/dto/create-notification.dto';
+import { SendNotificationRequestDto } from 'src/notification/dto/send-notification-request.dto';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2022-11-15',
@@ -33,10 +33,13 @@ export class PaymentService {
 
       case 'checkout.session.completed':
         const sessionCompleted = event.data.object;
+        console.log({sessionCompleted})
         const customerEmail = sessionCompleted.customer_details.email
-        const createNotification = new CreateNotificationDto
-        createNotification.email = customerEmail
-        this.notificationService.sendNotification(createNotification)
+        //const customerName = sessionCompleted.customer_details.name
+        const notificationRequest = new SendNotificationRequestDto
+        notificationRequest.email = customerEmail
+        notificationRequest.guestName = 'My Fren'
+        this.notificationService.sendNotification(notificationRequest)
         break;
 
       default:
