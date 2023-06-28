@@ -37,5 +37,9 @@ jobs:
           echo NYLAS_CLIENT_SECRET=${{ secrets.NYLAS_CLIENT_SECRET }} >> .env
           echo NYLAS_MAIN_ACCOUNT_ACCESS_TOKEN=${{ secrets.NYLAS_MAIN_ACCOUNT_ACCESS_TOKEN }} >> .env
       
+      - name: Setup Vonage variables and secrets
+          echo VONAGE_JWT_365_DAYS=${{ secrets.VONAGE_JWT_365_DAYS }} >> .env 
+          echo VONAGE_API_BASE_URL=${{ env.VONAGE_API_BASE_URL }} >> .env 
+
       - name: Restart server application
         run: pm2 restart aprendecodingapi
