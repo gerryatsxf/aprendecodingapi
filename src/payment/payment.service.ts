@@ -19,11 +19,6 @@ export class PaymentService {
   ){}
 
   async paymentSuccess(request, stripeSignature, endpointSecret, response){
-    const createNotification = new CreateNotificationDto
-
-    createNotification.email = 'test.lps.emails@gmail.com'
-    const nylasres = await this.notificationService.create(createNotification)
-
 
     let event;
 
@@ -41,15 +36,13 @@ export class PaymentService {
         const customerEmail = sessionCompleted.customer_details.email
         const createNotification = new CreateNotificationDto
         createNotification.email = customerEmail
-        const nylasres = await this.notificationService.create(createNotification)
-        console.log(nylasres)
+        this.notificationService.sendNotification(createNotification)
         break;
-      // ... handle other event types
+
       default:
         console.log(`Unhandled event type ${event.type}`);
     }
   
-    // Return a 200 response to acknowledge receipt of the event
     response.sendStatus(200);
   }
 

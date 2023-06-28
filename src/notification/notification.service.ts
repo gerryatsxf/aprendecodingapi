@@ -19,9 +19,9 @@ export class NotificationService {
 
   constructor(private readonly meetingService: MeetingService) {}
 
-  async create(createNotificationDto: CreateNotificationDto) {
+  async sendNotification(createNotificationDto: CreateNotificationDto) {
     console.log(createNotificationDto)
-    const meeting = await this.meetingService.create('Nylas Friend')
+    const meeting = await this.meetingService.createMeeting()
     console.log(meeting)
     const draft = new Draft(nylas, {
       subject: '¡Hola! Gracias por agendar',
@@ -31,19 +31,4 @@ export class NotificationService {
     return draft.send()
   }
 
-  findAll() {
-    return `This action returns all notification`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} notification`;
-  }
-
-  update(id: number, updateNotificationDto: UpdateNotificationDto) {
-    return `This action updates a #${id} notification`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} notification`;
-  }
 }

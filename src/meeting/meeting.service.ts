@@ -12,37 +12,18 @@ export class MeetingService {
 
   constructor(private readonly httpService: HttpService) {}
   
-  async create(attendeeName: string): Promise<CreateMeetingDto> {
+  async createMeeting(): Promise<CreateMeetingDto> {
     const BASE_URL = process.env.VONAGE_API_BASE_URL
-    const headersRequest = {
-      'Authorization': `Bearer ${process.env.VONAGE_JWT_365_DAYS}`
-    }
-
+    const headersRequest = {'Authorization': `Bearer ${process.env.VONAGE_JWT_365_DAYS}` }
     return firstValueFrom(this.httpService.post(
       path.join(BASE_URL, 'meetings/rooms'), 
-      { "display_name": "Gerry's Meeting Room"},
+      { "display_name": "Aula virtual de aprendecoding.com"},
       { headers: headersRequest }
     ).pipe(
       tap((resp) => console.log(resp)),
       map((resp) => plainToClass(CreateMeetingDto, resp.data)),
       tap((data) => console.log(data))
     ));
-
   }
 
-  findAll() {
-    return `This action returns all meeting`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} meeting`;
-  }
-
-  update(id: number, updateMeetingDto: UpdateMeetingDto) {
-    return `This action updates a #${id} meeting`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} meeting`;
-  }
 }
