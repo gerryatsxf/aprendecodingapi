@@ -20,8 +20,8 @@ export class NotificationService {
   async sendNotification(notificationRequest: SendNotificationRequestDto) {
     const meeting = await this.meetingService.createMeeting()
     const draft = new Draft(nylas, {
-      subject: '¡Hola! Gracias por agendar',
-      body: 'Te damos un cálido saludo de parte de aprendecoding.com :) Has agendado una sesión de asesoría para el XX de XX del XXXX a las XX:XX pm. Este es el link de la reunión: ' + meeting._links.guest_url.href,
+      subject: `¡Hola, ${notificationRequest.guestName}! Gracias por agendar`,
+      body: `Mucho gusto ${notificationRequest.guestName}. Te damos un cálido saludo de parte de aprendecoding.com :) Has agendado una sesión de asesoría para el XX de XX del XXXX a las XX:XX pm. Este es el link de la reunión: ` + meeting._links.guest_url.href,
       to: [{ name: notificationRequest.guestName, email: notificationRequest.email }]
     });
     return draft.send()
