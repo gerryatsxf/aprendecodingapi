@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { Availability } from './entities/availability.entity';
+import { Availability, WorkSlot } from './entities/availability.entity';
 import 'dotenv/config';
 import { DateTime } from 'luxon';
+import { TimestampSlotDto } from './dto/timestamp-slot.dto';
 // TODO: use a proper database to store this information
 
 const availability = new Availability();
@@ -16,19 +17,22 @@ const availableDays = [
   //'sunday',
 ];
 
+const availableHours = [
+  { startTime: '18:00', endTime: '18:59' },
+  { startTime: '19:00', endTime: '19:59' },
+];
+
 availability.workSlots = [];
 availability.timezone = 'America/Monterrey';
 availability.email = process.env.NYLAS_MAIN_ACCOUNT_EMAIL;
 availableDays.forEach((day) => {
-  availability.workSlots.push({
-    day,
-    startTime: '18:00',
-    endTime: '18:59',
-  });
-  availability.workSlots.push({
-    day,
-    startTime: '19:00',
-    endTime: '19:59',
+  availableHours.forEach((hour) => {
+    const workSlot = new WorkSlot();
+    workSlot.day = day;
+    workSlot.startTime = hour.startTime;
+    workSlot.endTime = hour.endTime;
+    workSlot.localTimezoneDate = '';
+    availability.workSlots.push(workSlot);
   });
 });
 
@@ -63,11 +67,13 @@ export class AvailabilityService {
         minute: parseInt(slot.endTime.split(':')[1]),
       });
 
-      return {
-        day: slot.day,
-        startTime: startDateTime.toSeconds(),
-        endTime: endDateTime.toSeconds(),
-      };
+      const freeSlot = new TimestampSlotDto();
+      freeSlot.day = slot.day;
+      freeSlot.localTimezoneDate = targetDay.toISODate();
+      freeSlot.startTime = startDateTime.toSeconds();
+      freeSlot.endTime = endDateTime.toSeconds();
+
+      return freeSlot;
     });
   }
 

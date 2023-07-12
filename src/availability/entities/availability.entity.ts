@@ -8,7 +8,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-class WorkSlot {
+export class WorkSlot {
   @IsString()
   @IsIn([
     'monday',
@@ -22,7 +22,7 @@ class WorkSlot {
   day: string;
 
   @IsString()
-  date: string;
+  localTimezoneDate: string;
 
   @IsString()
   startTime: string;
