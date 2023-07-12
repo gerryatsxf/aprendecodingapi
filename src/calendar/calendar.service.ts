@@ -12,12 +12,10 @@ Nylas.config({
 });
 
 const nylas = Nylas.with(process.env.NYLAS_MAIN_ACCOUNT_ACCESS_TOKEN);
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { default: Draft } = require('nylas/lib/models/draft');
 
 const kebabCase = (s: string) =>
   s
-    .normalize('NFD') // split an accented letter in the base letter and the acent
+    .normalize('NFD') // split an accented letter in the base letter and the accent
     .replace(/[\u0300-\u036f]/g, '') // remove all previously split accents
     .replace(/([a-z])([A-Z])/g, '$1-$2') // split camelCase
     .replace(/[\s_]+/g, '-') // replace all spaces and low dash
@@ -42,15 +40,22 @@ export class CalendarService {
     return nylas.calendars.list();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} calendar`;
+  findOne(id: string) {
+    return nylas.calendars.find(id);
   }
 
-  update(id: number, updateCalendarDto: UpdateCalendarDto) {
-    return `This action updates a #${id} calendar`;
+  update(id: string, updateCalendarDto: UpdateCalendarDto) {
+    return nylas.calendars.find(id).then((calendar: NylasCalendar) => {
+      calendar.name = updateCalendarDto.name;
+      calendar.description = updateCalendarDto.description;
+      calendar.metadata = {
+        keyname: kebabCase(updateCalendarDto.name),
+      };
+      return calendar.save();
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} calendar`;
+  remove(id: string) {
+    return nylas.calendars.delete(id);
   }
 }
