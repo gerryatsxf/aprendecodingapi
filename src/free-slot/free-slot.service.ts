@@ -13,7 +13,8 @@ export class FreeSlotService {
   ) {}
 
   async getFreeSlots() {
-    const workSlots = this.availabilityService.findWorkSlots();
+    const workSlotsResult = this.availabilityService.findWorkSlots();
+    const workSlots = workSlotsResult.workSlots;
 
     const startTime = Math.floor(Date.now() / 1000); // current unix
     const endTime = startTime + 60 * 60 * 24 * 5; // add 5 days in seconds
@@ -44,6 +45,9 @@ export class FreeSlotService {
       });
     });
 
-    return freeSlots;
+    return {
+      localTimezone: workSlotsResult.timezone,
+      freeSlots: freeSlots,
+    };
   }
 }

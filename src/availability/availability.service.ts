@@ -53,28 +53,31 @@ export class AvailabilityService {
   }
 
   findWorkSlots() {
-    return availability.workSlots.map((slot) => {
-      const now = DateTime.local().setZone(availability.timezone);
-      const targetDay = this.getNextDayOfWeek(now, slot.day);
+    return {
+      timezone: availability.timezone,
+      workSlots: availability.workSlots.map((slot) => {
+        const now = DateTime.local().setZone(availability.timezone);
+        const targetDay = this.getNextDayOfWeek(now, slot.day);
 
-      const startDateTime = targetDay.set({
-        hour: parseInt(slot.startTime.split(':')[0]),
-        minute: parseInt(slot.startTime.split(':')[1]),
-      });
+        const startDateTime = targetDay.set({
+          hour: parseInt(slot.startTime.split(':')[0]),
+          minute: parseInt(slot.startTime.split(':')[1]),
+        });
 
-      const endDateTime = targetDay.set({
-        hour: parseInt(slot.endTime.split(':')[0]),
-        minute: parseInt(slot.endTime.split(':')[1]),
-      });
+        const endDateTime = targetDay.set({
+          hour: parseInt(slot.endTime.split(':')[0]),
+          minute: parseInt(slot.endTime.split(':')[1]),
+        });
 
-      const freeSlot = new TimestampSlotDto();
-      freeSlot.day = slot.day;
-      freeSlot.localTimezoneDate = targetDay.toISODate();
-      freeSlot.startTime = startDateTime.toSeconds();
-      freeSlot.endTime = endDateTime.toSeconds();
+        const freeSlot = new TimestampSlotDto();
+        freeSlot.day = slot.day;
+        freeSlot.localTimezoneDate = targetDay.toISODate();
+        freeSlot.startTime = startDateTime.toSeconds();
+        freeSlot.endTime = endDateTime.toSeconds();
 
-      return freeSlot;
-    });
+        return freeSlot;
+      }),
+    };
   }
 
   getNextDayOfWeek(date: DateTime, dayOfWeek: string) {
