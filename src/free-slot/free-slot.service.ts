@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
 import { Availability } from '../availability/entities/availability.entity';
-import { NylasFreeBusy } from '../calendar/entities/nylas-free-busy.entity';
+import { Injectable } from '@nestjs/common';
 import { AvailabilityService } from '../availability/availability.service';
+import { NylasFreeBusy } from '../calendar/entities/nylas-free-busy.entity';
 import { CalendarService } from '../calendar/calendar.service';
+
 @Injectable()
 export class FreeSlotService {
   constructor(
@@ -24,30 +25,37 @@ export class FreeSlotService {
     const availabilityStartTime = this.getTimeInMinutes(availability.startTime);
     const availabilityEndTime = this.getTimeInMinutes(availability.endTime);
 
-    console.log(nylasFreeBusy);
-    const freeSlots = nylasFreeBusy.flatMap((entry) => {
-      console.log(entry);
-      return entry.timeSlots
-        .map((slot) => ({
-          startTime: new Date(slot.startTime * 1000), // Convert Unix timestamp to JS Date object
-          endTime: new Date(slot.endTime * 1000),
-        }))
-        .filter((slot) => {
-          const day = this.getDayName(slot.startTime);
-          const startTime =
-            slot.startTime.getUTCHours() * 60 + slot.startTime.getUTCMinutes();
-          const endTime =
-            slot.endTime.getUTCHours() * 60 + slot.endTime.getUTCMinutes();
+    const freeSlots = [];
+    for (
+      let time = availabilityStartTime;
+      time < availabilityEndTime;
+      time += 60
+    ) {
+      const day = this.getDayName(new Date(time * 1000));
+      if (!availabilityDays.includes(day)) continue;
 
-          // Check if the day, start time, and end time match the availability
-          console.log({day, availabilityStartTime, availabilityEndTime, startTime, endTime});
-          return (
-            availabilityDays.includes(day) &&
-            startTime >= availabilityStartTime &&
-            endTime <= availabilityEndTime
-          );
+      const isFree = nylasFreeBusy.every((entry) => {
+        return entry.timeSlots.every((slot) => {
+          const slotStartTimeDate = new Date(slot.startTime * 1000);
+          const slotEndTimeDate = new Date(slot.endTime * 1000);
+          const slotStartTime =
+            (slot.startTime * 1000 +
+              slotStartTimeDate.getTimezoneOffset() * 60) %
+            1440;
+          const slotEndTime =
+            (slot.endTime * 1000 + slotEndTimeDate.getTimezoneOffset() * 60) %
+            1440;
+          return time < slotStartTime || time + 60 > slotEndTime;
         });
-    });
+      });
+
+      if (isFree) {
+        freeSlots.push({
+          startTime: new Date(time * 1000),
+          endTime: new Date((time + 60) * 1000),
+        });
+      }
+    }
 
     return freeSlots;
   }
