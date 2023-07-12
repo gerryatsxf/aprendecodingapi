@@ -1,4 +1,4 @@
-import { IsArray, IsIn, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsIn, IsOptional, IsString, IsEmail } from 'class-validator';
 
 export class Availability {
   @IsOptional()
@@ -28,4 +28,7 @@ export class Availability {
 
   @IsString()
   timezone: string;
+
+  @IsEmail()
+  email: string;
 }

@@ -1,16 +1,11 @@
 import {
   Controller,
   Get,
-  Post,
-  Body,
-  Patch,
+  NotImplementedException,
   Param,
-  Delete,
 } from '@nestjs/common';
 import { AvailabilityService } from './availability.service';
-import { CreateAvailabilityDto } from './dto/create-availability.dto';
-import { UpdateAvailabilityDto } from './dto/update-availability.dto';
-import { ApiTags } from "@nestjs/swagger";
+import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Availability')
 @Controller('availability')
@@ -19,18 +14,20 @@ export class AvailabilityController {
 
   @Get()
   findAll() {
-    return this.availabilityService.findAll();
+    // return this.availabilityService.findAll();
+    return new NotImplementedException();
   }
 
   @Get('current')
   findCurrent() {
-    return this.availabilityService.findCurrent();
+    // return this.availabilityService.findCurrent();
+    return new NotImplementedException();
   }
 
   @Get(':id')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   findOne(@Param('id') id: string) {
-    return this.availabilityService.findOne(id);
+    // return this.availabilityService.findOne(id);
+    return new NotImplementedException();
   }
-
-
 }
