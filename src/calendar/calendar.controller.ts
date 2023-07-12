@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   NotImplementedException,
+  Query,
 } from '@nestjs/common';
 import { CalendarService } from './calendar.service';
 import { CreateCalendarDto } from './dto/create-calendar.dto';
@@ -31,6 +32,17 @@ export class CalendarController {
   findAll() {
     //return this.calendarService.findAll();
     return new NotImplementedException();
+  }
+
+  @Get('freebusy')
+  async getFreeBusy(
+    @Query('startTime') startTime: number,
+    @Query('endTime') endTime: number,
+  ) {
+    const mainEmailAccount = process.env.NYLAS_MAIN_ACCOUNT_EMAIL;
+    return await this.calendarService.getFreeBusy(startTime, endTime, [
+      mainEmailAccount,
+    ]);
   }
 
   @Get(':id')

@@ -22,6 +22,15 @@ const kebabCase = (s: string) =>
     .toLowerCase(); // convert to lower case
 @Injectable()
 export class CalendarService {
+  private nylas;
+
+  constructor() {
+    Nylas.config({
+      clientId: process.env.NYLAS_CLIENT_ID,
+      clientSecret: process.env.NYLAS_CLIENT_SECRET,
+    });
+    this.nylas = Nylas.with(process.env.NYLAS_MAIN_ACCOUNT_ACCESS_TOKEN);
+  }
   create(createCalendarDto: CreateCalendarDto) {
     const calendar = new NylasCalendar(nylas, {
       name: createCalendarDto.name,
@@ -57,5 +66,13 @@ export class CalendarService {
 
   remove(id: string) {
     return nylas.calendars.delete(id);
+  }
+
+  async getFreeBusy(startTime: number, endTime: number, emails: string[]) {
+    return await this.nylas.calendars.freeBusy({
+      startTime: startTime,
+      endTime: endTime,
+      emails: emails,
+    });
   }
 }
