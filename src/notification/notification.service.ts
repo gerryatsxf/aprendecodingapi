@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { SendNotificationRequestDto } from './dto/send-notification-request.dto';
 import 'dotenv/config';
 import { MeetingService } from 'src/meeting/meeting.service';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const Nylas = require('nylas');
 
 Nylas.config({
@@ -10,15 +11,15 @@ Nylas.config({
 });
 
 const nylas = Nylas.with(process.env.NYLAS_MAIN_ACCOUNT_ACCESS_TOKEN);
-const { default: Draft } = require('nylas/lib/models/draft'); 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { default: Draft } = require('nylas/lib/models/draft');
 
 @Injectable()
 export class NotificationService {
-
   constructor(private readonly meetingService: MeetingService) {}
 
   async sendNotification(notificationRequest: SendNotificationRequestDto) {
-    const meeting = await this.meetingService.createMeeting()
+    const meeting = await this.meetingService.createMeeting();
     const draft = new Draft(nylas, {
       subject: `¡Hola, ${notificationRequest.guestName}! Gracias por agendar`,
       body: `
@@ -35,9 +36,13 @@ export class NotificationService {
         \n<br>
         \n<br> Atentamente, 
         \n<br> aprendecoding.com`,
-      to: [{ name: notificationRequest.guestName, email: notificationRequest.email }]
+      to: [
+        {
+          name: notificationRequest.guestName,
+          email: notificationRequest.email,
+        },
+      ],
     });
-    return draft.send()
+    return draft.send();
   }
-
 }

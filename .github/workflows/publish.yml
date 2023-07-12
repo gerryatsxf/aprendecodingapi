@@ -31,11 +31,13 @@ jobs:
           echo STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }} >> .env 
           echo STRIPE_PAYMENT_SUCCESS_WEBHOOK_SECRET_KEY=${{ secrets.STRIPE_PAYMENT_SUCCESS_WEBHOOK_SECRET_KEY }} >> .env
       
-      - name: Setup Nylas secrets
+      - name: Setup Nylas variables and secrets
         run: |
           echo NYLAS_CLIENT_ID=${{ secrets.NYLAS_CLIENT_ID }} >> .env 
           echo NYLAS_CLIENT_SECRET=${{ secrets.NYLAS_CLIENT_SECRET }} >> .env
           echo NYLAS_MAIN_ACCOUNT_ACCESS_TOKEN=${{ secrets.NYLAS_MAIN_ACCOUNT_ACCESS_TOKEN }} >> .env
+          echo NYLAS_CALENDAR_ASESORIAS_KEYNAME=${{ vars.NYLAS_CALENDAR_ASESORIAS_KEYNAME }} >> .env 
+          echo NYLAS_CALENDAR_CONSULTORIA_KEYNAME=${{ vars.NYLAS_CALENDAR_CONSULTORIA_KEYNAME }} >> .env 
       
       - name: Setup Vonage variables and secrets
         run: |
