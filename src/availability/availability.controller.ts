@@ -18,6 +18,11 @@ export class AvailabilityController {
     return new NotImplementedException();
   }
 
+  @Get('workslots')
+  findWorkSlots() {
+    return this.availabilityService.findWorkSlots();
+  }
+
   @Get('current')
   findCurrent() {
     return this.availabilityService.findCurrent();
@@ -30,4 +35,6 @@ export class AvailabilityController {
     // return this.availabilityService.findOne(id);
     return new NotImplementedException();
   }
+
+
 }
