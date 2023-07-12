@@ -6,6 +6,6 @@ import { HttpModule } from '@nestjs/axios';
   imports: [HttpModule],
   exports: [HttpModule],
   controllers: [],
-  providers: [MeetingService]
+  providers: [MeetingService],
 })
 export class MeetingModule {}

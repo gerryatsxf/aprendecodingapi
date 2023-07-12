@@ -5,6 +5,6 @@ import { NotificationModule } from 'src/notification/notification.module';
 @Module({
   imports: [NotificationModule],
   controllers: [PaymentController],
-  providers: [PaymentService]
+  providers: [PaymentService],
 })
 export class PaymentModule {}

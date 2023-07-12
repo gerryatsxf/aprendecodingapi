@@ -35,6 +35,4 @@ export class AvailabilityController {
     // return this.availabilityService.findOne(id);
     return new NotImplementedException();
   }
-
-
 }

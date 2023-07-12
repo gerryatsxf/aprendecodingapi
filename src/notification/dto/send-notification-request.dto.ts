@@ -1,4 +1,4 @@
 export class SendNotificationRequestDto {
-    email: string;
-    guestName: string = 'Aprendiz'
+  email: string;
+  guestName: string = 'Aprendiz';
 }
