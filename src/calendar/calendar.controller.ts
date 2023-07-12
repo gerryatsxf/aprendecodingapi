@@ -35,10 +35,9 @@ export class CalendarController {
   }
 
   @Get('freebusy')
-  async getFreeBusy(
-    @Query('startTime') startTime: number,
-    @Query('endTime') endTime: number,
-  ) {
+  async getFreeBusy() {
+    const startTime = Math.floor(Date.now() / 1000); // current unix
+    const endTime = startTime + 60 * 60 * 24 * 5; // add 5 days in seconds
     const mainEmailAccount = process.env.NYLAS_MAIN_ACCOUNT_EMAIL;
     return await this.calendarService.getFreeBusy(startTime, endTime, [
       mainEmailAccount,
