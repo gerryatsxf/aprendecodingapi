@@ -5,6 +5,7 @@ import { MeetingModule } from './meeting/meeting.module';
 import { NotificationModule } from './notification/notification.module';
 import { CalendarModule } from './calendar/calendar.module';
 import { AvailabilityModule } from './availability/availability.module';
+import { FreeSlotModule } from './free-slot/free-slot.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { AvailabilityModule } from './availability/availability.module';
     NotificationModule,
     CalendarModule,
     AvailabilityModule,
+    FreeSlotModule,
   ],
   controllers: [],
   providers: [AppService],

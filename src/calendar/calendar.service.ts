@@ -3,6 +3,7 @@ import { CreateCalendarDto } from './dto/create-calendar.dto';
 import { UpdateCalendarDto } from './dto/update-calendar.dto';
 import 'dotenv/config';
 import NylasCalendar from 'nylas/lib/models/calendar';
+import { NylasFreeBusy } from './entities/nylas-free-busy.entity';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Nylas = require('nylas');
 console.log(process.env);
@@ -36,7 +37,7 @@ export class CalendarService {
       name: createCalendarDto.name,
       description: createCalendarDto.description,
       location: 'En línea',
-      timezone: 'America/Los_Angeles',
+      timezone: 'America/Monterrey',
       metadata: {
         keyname: kebabCase(createCalendarDto.name),
       },
@@ -68,7 +69,11 @@ export class CalendarService {
     return nylas.calendars.delete(id);
   }
 
-  async getFreeBusy(startTime: number, endTime: number, emails: string[]) {
+  async getFreeBusy(
+    startTime: number,
+    endTime: number,
+    emails: string[],
+  ): Promise<NylasFreeBusy[]> {
     return await this.nylas.calendars.freeBusy({
       startTime: startTime,
       endTime: endTime,

@@ -4,6 +4,7 @@ import { AvailabilityController } from './availability.controller';
 
 @Module({
   controllers: [AvailabilityController],
-  providers: [AvailabilityService]
+  providers: [AvailabilityService],
+  exports: [AvailabilityService],
 })
 export class AvailabilityModule {}

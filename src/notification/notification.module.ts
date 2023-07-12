@@ -7,6 +7,6 @@ import { MeetingService } from 'src/meeting/meeting.service';
   imports: [MeetingModule],
   controllers: [],
   providers: [NotificationService, MeetingService],
-  exports:  [NotificationService]
+  exports: [NotificationService],
 })
 export class NotificationModule {}

@@ -30,7 +30,7 @@ export class CalendarController {
 
   @Get()
   findAll() {
-    //return this.calendarService.findAll();
+    // return this.calendarService.findAll();
     return new NotImplementedException();
   }
 
@@ -47,8 +47,8 @@ export class CalendarController {
   @Get(':id')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   findOne(@Param('id') id: string) {
-    //return this.calendarService.findOne(id);
-    return new NotImplementedException();
+    return this.calendarService.findOne(id);
+    // return new NotImplementedException();
   }
 
   @Patch(':id')
@@ -58,14 +58,14 @@ export class CalendarController {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     @Body() updateCalendarDto: UpdateCalendarDto,
   ) {
-    // return this.calendarService.update(id, updateCalendarDto);
-    return new NotImplementedException();
+    return this.calendarService.update(id, updateCalendarDto);
+    // return new NotImplementedException();
   }
 
   @Delete(':id')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   remove(@Param('id') id: string) {
-    //return this.calendarService.remove(id);
+    // return this.calendarService.remove(id);
     return new NotImplementedException();
   }
 }

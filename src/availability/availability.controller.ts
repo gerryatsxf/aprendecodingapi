@@ -20,8 +20,8 @@ export class AvailabilityController {
 
   @Get('current')
   findCurrent() {
-    // return this.availabilityService.findCurrent();
-    return new NotImplementedException();
+    return this.availabilityService.findCurrent();
+    // return new NotImplementedException();
   }
 
   @Get(':id')
