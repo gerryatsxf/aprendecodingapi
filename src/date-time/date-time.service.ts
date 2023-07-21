@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDateTimeDto } from './dto/create-date-time.dto';
 import { UpdateDateTimeDto } from './dto/update-date-time.dto';
-import { DateTime, DateTimeDto } from './dto/date-time.dto';
+import { DateTimeDto } from './dto/date-time.dto';
 
 @Injectable()
 export class DateTimeService {
