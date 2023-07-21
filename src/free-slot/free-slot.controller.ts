@@ -1,13 +1,21 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { FreeSlotService } from './free-slot.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 @ApiTags('Free Time Slots')
 @Controller('free-slot')
 export class FreeSlotController {
   constructor(private readonly freeSlotService: FreeSlotService) {}
 
   @Get()
-  async getFreeSlots() {
-    return this.freeSlotService.getFreeSlots();
+  @ApiQuery({
+    name: 'guestTimezone',
+    required: false,
+    type: String,
+  }) // Add a Swagger query parameter
+  async getFreeSlots(
+    @Query('guestTimezone') guestTimezone = 'America/Monterrey',
+  ) {
+
+    return this.freeSlotService.getFreeSlots(guestTimezone);
   }
 }

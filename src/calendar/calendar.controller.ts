@@ -30,8 +30,8 @@ export class CalendarController {
 
   @Get()
   findAll() {
-    // return this.calendarService.findAll();
-    return new NotImplementedException();
+    return this.calendarService.findAll();
+    // return new NotImplementedException();
   }
 
   @Get('freebusy')

@@ -8,7 +8,6 @@
   "scripts": {
     "build": "nest build",
     "prettier": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "openapi:generate": "openapi-generator-cli generate -i C:/Users/IGNITER/work/aprendecodingapi/swagger-spec.json -g typescript-axios -o ./src/api",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",

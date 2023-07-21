@@ -3,9 +3,15 @@ import { FreeSlotService } from './free-slot.service';
 import { FreeSlotController } from './free-slot.controller';
 import { AvailabilityService } from '../availability/availability.service';
 import { CalendarService } from '../calendar/calendar.service';
+import { DateTimeService } from '../date-time/date-time.service';
 
 @Module({
   controllers: [FreeSlotController],
-  providers: [FreeSlotService, AvailabilityService, CalendarService],
+  providers: [
+    FreeSlotService,
+    AvailabilityService,
+    CalendarService,
+    DateTimeService,
+  ],
 })
 export class FreeSlotModule {}
