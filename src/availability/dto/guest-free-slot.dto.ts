@@ -11,14 +11,14 @@ export class GuestFreeSlotDto {
     'sábado',
     'domingo',
   ])
-  guestDay: string;
+  guestMeetingDay: string;
 
   @IsString()
-  guestDate: string;
+  guestMeetingDate: string;
 
   @IsString()
-  guestStartTime: string;
+  guestMeetingStartTime: string;
 
   @IsNumber()
-  startTime: number;
+  meetingStartTime: number;
 }

@@ -7,7 +7,7 @@ import {
   IsEmail,
   ValidateNested,
 } from 'class-validator';
-import { HoomanWorkSlotDto } from "../dto/work-slot.dto";
+import { HoomanWorkSlotDto } from '../dto/work-slot.dto';
 
 export class WorkSlot {
   @IsString()
@@ -33,8 +33,6 @@ export class WorkSlot {
 
   startDateTime: Date;
   endDateTime: Date;
-
-
 }
 
 export class Availability {

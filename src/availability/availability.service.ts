@@ -90,10 +90,6 @@ export class AvailabilityService {
     return availability.id === id ? availability : null;
   }
 
-  findCurrent() {
-    return availability;
-  }
-
   findWorkSlots() {
     return {
       timezone: availability.timezone,

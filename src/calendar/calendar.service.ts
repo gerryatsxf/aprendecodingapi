@@ -6,7 +6,7 @@ import NylasCalendar from 'nylas/lib/models/calendar';
 import { NylasFreeBusy } from './entities/nylas-free-busy.entity';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Nylas = require('nylas');
-console.log(process.env);
+
 Nylas.config({
   clientId: process.env.NYLAS_CLIENT_ID,
   clientSecret: process.env.NYLAS_CLIENT_SECRET,

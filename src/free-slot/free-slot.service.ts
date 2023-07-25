@@ -7,44 +7,16 @@ import { GuestFreeSlotDto } from '../availability/dto/guest-free-slot.dto';
 import FreeSlotDto from '../availability/dto/free-slot.dto';
 import { plainToClass } from 'class-transformer';
 import { WorkSlotDto } from '../availability/dto/work-slot.dto';
-import { DateTimeService } from "../date-time/date-time.service";
-
-function getTimezoneOffset(timezone: string): number {
-  const stdTimezoneOffset = (date: Date): number => {
-    const jan = new Date(date.getFullYear(), 0, 1);
-    const jul = new Date(date.getFullYear(), 6, 1);
-    return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
-  };
-
-  const today = new Date();
-
-  const isDstObserved = (date: Date): boolean => {
-    return date.getTimezoneOffset() < stdTimezoneOffset(date);
-  };
-
-  const timezoneDate = new Date().toLocaleString('en-US', {
-    timeZone: timezone,
-  });
-
-  const dateInTimezone = new Date(timezoneDate);
-
-  if (isDstObserved(dateInTimezone)) {
-    return dateInTimezone.getTimezoneOffset() / -60; // DST is observed
-  } else {
-    return dateInTimezone.getTimezoneOffset() / -60 - 1; // DST is not observed
-  }
-}
+import { DateTimeDto } from '../date-time/dto/date-time.dto';
 
 @Injectable()
 export class FreeSlotService {
   constructor(
     private readonly availabilityService: AvailabilityService,
     private readonly calendarService: CalendarService,
-    private readonly dateTimeService: DateTimeService,
   ) {}
 
   async getFreeSlots(guestTimezone = 'America/Monterrey') {
-    console.log({ guestTimezone });
     const workSlotsResult = this.availabilityService.findWorkSlots();
 
     const workSlots = workSlotsResult.workSlots;
@@ -66,71 +38,42 @@ export class FreeSlotService {
         });
       });
 
-    const freeSlots: FreeSlotDto[] = workSlots.filter(
-      (workSlot: WorkSlotDto) => {
-        // return true if the work slot does not overlap with any busy slot
-        return busySlots.some((busySlot) => {
-          return (
-            workSlot.endTime <= busySlot.startTime || // if work slot ends before busy slot starts
-            workSlot.startTime >= busySlot.endTime // if work slot starts after busy slot ends
-          );
-        });
-      },
-    );
+    const freeSlots: FreeSlotDto[] =
+      busySlots.length === 0
+        ? workSlots
+        : workSlots.filter((workSlot: WorkSlotDto) => {
+            // return true if the work slot overlaps with any busy slot
+            return (
+              workSlot.startTime <= new Date().getTime() &&
+              !busySlots.some((busySlot) => {
+                return (
+                  (workSlot.startTime > busySlot.startTime &&
+                    workSlot.startTime < busySlot.endTime) || // start time is in the middle of the busy slot
+                  (workSlot.endTime > busySlot.startTime &&
+                    workSlot.endTime < busySlot.endTime) || // end time is in the middle of the busy slot
+                  (workSlot.startTime == busySlot.startTime &&
+                    workSlot.endTime == busySlot.endTime) // work slot is exactly the same as the busy slot
+                );
+              })
+            );
+          });
 
     // Convert the free slots to the guest timezone
     //const guestTimezoneObj = guestTimezone;
     const guestFreeSlots: GuestFreeSlotDto[] = freeSlots.map(
       (slot: FreeSlotDto) => {
-        const hostStartDateTime = slot.startDateTime;
-        console.log(slot)
-
-        console.log({
-          hostStartDateTime: hostStartDateTime.toISOString().replace('Z', ''),
-        });
-
-        console.log(
-          hostStartDateTime.toLocaleString('es-ES', {
-            year: 'numeric',
-            timeZone: guestTimezone,
-          }),
-        );
-
-        const guestStartYear = hostStartDateTime.toLocaleString('es-ES', {
-          year: 'numeric',
-          timeZone: guestTimezone,
-        });
-        const guestStartMonth = hostStartDateTime.toLocaleString('es-ES', {
-          month: '2-digit',
-          timeZone: guestTimezone,
-        });
-        const guestStartDay = hostStartDateTime.toLocaleString('es-ES', {
-          day: '2-digit',
-          timeZone: guestTimezone,
-        });
-        const guestStartHour = this.prependZero(
-          +hostStartDateTime.toLocaleString('es-ES', {
-            hour: 'numeric',
-            timeZone: guestTimezone,
-          }),
-        );
-
-        const guestStartMinute = this.prependZero(
-          +hostStartDateTime.toLocaleString('es-ES', {
-            minute: 'numeric',
-            timeZone: guestTimezone,
-          }),
-        );
-
         const guestSlot = new GuestFreeSlotDto();
-        guestSlot.startTime = slot.startTime;
-
-        guestSlot.guestStartTime = `${guestStartHour}:${guestStartMinute}`;
-        guestSlot.guestDate = `${guestStartYear}-${guestStartMonth}-${guestStartDay}`;
-        guestSlot.guestDay = this.formatGuestDay(
-          hostStartDateTime,
+        guestSlot.meetingStartTime = slot.startTime;
+        const dateTime = DateTimeDto.timestampToDateTime(
+          slot.startTime * 1000,
           guestTimezone,
         );
+
+        guestSlot.guestMeetingDate = dateTime.strDate;
+        guestSlot.guestMeetingStartTime = dateTime.strTime;
+        guestSlot.meetingStartTime = slot.startTime;
+        guestSlot.guestMeetingDay = dateTime.dayOfWeek;
+
         return guestSlot;
       },
     );
@@ -141,15 +84,4 @@ export class FreeSlotService {
     };
   }
 
-  private formatGuestDay(date: Date, guestTimezone: string): string {
-    const options = {
-      weekday: 'long' as const,
-      timeZone: guestTimezone,
-    };
-    return new Intl.DateTimeFormat('es-ES', options).format(date);
-  }
-
-  private prependZero(time: number): string {
-    return time < 10 ? `0${time}` : time.toString();
-  }
 }
