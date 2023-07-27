@@ -12,8 +12,11 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import 'dotenv/config';
 import { AuthModule } from './auth/auth.module';
-console.log(process.env.MONGO_DB_CONNECTION_URL);
+//console.log(process.env.MONGO_DB_CONNECTION_URL);
 
+const MONGO_DB_CONNECTION_URL = `${process.env.MONGO_DB_PROTOCOL}://${process.env.MONGO_DB_USER}:${process.env.MONGO_DB_PASSWORD}@${process.env.MONGO_DB_HOST}/?retryWrites=true&w=majority`;
+
+console.log(MONGO_DB_CONNECTION_URL);
 @Module({
   imports: [
     AuthModule,
@@ -29,7 +32,7 @@ console.log(process.env.MONGO_DB_CONNECTION_URL);
       envFilePath: '.env',
       isGlobal: true,
     }),
-    MongooseModule.forRoot(process.env.MONGO_DB_CONNECTION_URL),
+    MongooseModule.forRoot(MONGO_DB_CONNECTION_URL),
   ],
   controllers: [],
   providers: [AppService],
