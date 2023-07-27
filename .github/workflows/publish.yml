@@ -53,6 +53,7 @@ jobs:
         run: |
           echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env 
           echo JWT_EXPIRES_IN=${{ vars.JWT_EXPIRES_IN }} >> .env 
+          echo MONGO_DB_CONNECTION_URL=${{ secrets.MONGO_DB_CONNECTION_URL }} >> .env
 
       - name: Restart server application
         run: pm2 restart aprendecodingapi
