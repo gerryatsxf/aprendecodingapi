@@ -45,5 +45,14 @@ jobs:
           echo VONAGE_JWT_365_DAYS=${{ secrets.VONAGE_JWT_365_DAYS }} >> .env 
           echo VONAGE_API_BASE_URL=${{ vars.VONAGE_API_BASE_URL }} >> .env 
 
+      - name: Setup Mongo DB secret
+        run: |
+          echo MONGO_DB_CONNECTION_URL=${{ secrets.MONGO_DB_CONNECTION_URL }} >> .env 
+
+      - name: Setup AprendeCoding variables and secrets
+        run: |
+          echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env 
+          echo JWT_EXPIRES_IN=${{ vars.JWT_EXPIRES_IN }} >> .env 
+
       - name: Restart server application
         run: pm2 restart aprendecodingapi
