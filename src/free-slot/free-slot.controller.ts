@@ -6,7 +6,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 @Controller('free-slot')
 export class FreeSlotController {
   constructor(private readonly freeSlotService: FreeSlotService) {}
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
   @ApiQuery({
     name: 'guestTimezone',
@@ -14,7 +14,7 @@ export class FreeSlotController {
     type: String,
     description: 'The timezone of the guest. Defaults to America/Monterrey.',
   }) // Add a Swagger query parameter
-  //@ApiBearerAuth()
+  @ApiBearerAuth()
   async getFreeSlots(
     @Query('guestTimezone') guestTimezone = 'America/Monterrey',
   ) {
