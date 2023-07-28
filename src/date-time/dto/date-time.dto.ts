@@ -27,6 +27,14 @@ export class DateTimeDto {
       .toLowerCase();
     return dateTime;
   }
+
+  static DateToTimestamp(strDate: string, timezone: string){
+    const date = new Date(strDate);
+    const offset = DateTimeDto.timezoneOffsetMap[timezone];
+    const tzDifference = offset * 60 + date.getTimezoneOffset();
+    const d = new Date(date.getTime() + tzDifference * 60 * 1000);
+    return d.getTime();
+  }
   strDate: string;
   offset: number;
   timezone: string;

@@ -83,5 +83,4 @@ export class FreeSlotService {
       freeSlots: guestFreeSlots,
     };
   }
-
 }
