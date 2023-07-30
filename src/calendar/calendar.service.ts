@@ -4,6 +4,7 @@ import { UpdateCalendarDto } from './dto/update-calendar.dto';
 import 'dotenv/config';
 import NylasCalendar from 'nylas/lib/models/calendar';
 import { NylasFreeBusy } from './entities/nylas-free-busy.entity';
+import { DateTimeDto } from '../date-time/dto/date-time.dto';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Nylas = require('nylas');
 
@@ -44,6 +45,10 @@ export class CalendarService {
     });
 
     return calendar.save();
+  }
+
+  getTimezoneList(): string[] {
+    return DateTimeDto.getTimeZoneList();
   }
 
   findAll() {

@@ -13,11 +13,14 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     return super.canActivate(context);
   }
 
-  handleRequest(err, user, info) {
+  handleRequest(err, session, info) {
     // You can throw an exception based on either "info" or "err" arguments
-    if (err || !user) {
+    if (err || !session) {
       throw err || new UnauthorizedException();
     }
-    return user;
+    if (session.timestamp + session.duration < Date.now()) {
+      throw err || new UnauthorizedException();
+    }
+    return session;
   }
 }

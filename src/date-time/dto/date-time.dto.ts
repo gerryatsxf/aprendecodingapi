@@ -28,13 +28,14 @@ export class DateTimeDto {
     return dateTime;
   }
 
-  static DateToTimestamp(strDate: string, timezone: string){
-    const date = new Date(strDate);
-    const offset = DateTimeDto.timezoneOffsetMap[timezone];
-    const tzDifference = offset * 60 + date.getTimezoneOffset();
-    const d = new Date(date.getTime() + tzDifference * 60 * 1000);
-    return d.getTime();
+  static getTimezoneOffset(timezone: string): number {
+    return DateTimeDto.timezoneOffsetMap[timezone];
   }
+
+  static getTimeZoneList(): string[] {
+    return Object.keys(DateTimeDto.timezoneOffsetMap);
+  }
+
   strDate: string;
   offset: number;
   timezone: string;
@@ -42,17 +43,20 @@ export class DateTimeDto {
   dayOfWeek: string;
 
   static timezoneOffsetMap = {
-    'America/Monterrey': -6,
-    'America/Chicago': -5,
-    'America/New_York': -4,
-    'America/Los_Angeles': -7,
-    'America/Phoenix': -7,
-    'America/Denver': -6,
-    'America/Anchorage': -8,
-    'America/Adak': -9,
-    'Pacific/Honolulu': -10,
-    'Pacific/Guam': 10,
+    'America/Bahia_Banderas': -6, // Update the offset as needed
     'America/Cancun': -5,
+    'America/Chihuahua': -6,
+    'America/Ciudad_Juarez': -6,
+    'America/Ensenada': -7,
+    'America/Hermosillo': -7,
+    'America/Matamoros': -5,
+    'America/Mazatlan': -6,
+    'America/Merida': -6,
+    'America/Mexico_City': -6,
+    'America/Monterrey': -6,
+    'America/Ojinaga': -6,
+    'America/Santa_Isabel': -8,
+    'America/Tijuana': -7,
   };
 
   static prependZero(time) {

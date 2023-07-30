@@ -80,6 +80,7 @@ export class FreeSlotService {
 
     return {
       guestTimezone: guestTimezone,
+      guestTimezoneOffset: DateTimeDto.getTimezoneOffset(guestTimezone),
       freeSlots: guestFreeSlots,
     };
   }

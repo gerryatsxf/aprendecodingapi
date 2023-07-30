@@ -30,7 +30,7 @@ export class SessionService {
   }
 
   update(id: number, updateSessionDto: UpdateSessionDto) {
-    return `This action updates a #${id} session`;
+    return this.sessionModel.findByIdAndUpdate(id, updateSessionDto);
   }
 
   remove(id: number) {
