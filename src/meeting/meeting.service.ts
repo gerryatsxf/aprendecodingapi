@@ -9,6 +9,10 @@ import * as path from 'path';
 export class MeetingService {
   constructor(private readonly httpService: HttpService) {}
 
+  async requestBooking(): Promise<string[]> {
+    return ['Meeting booked'];
+  }
+
   async createMeeting(): Promise<CreateMeetingResultDto> {
     const BASE_URL = process.env.VONAGE_API_BASE_URL;
     const headersRequest = {
