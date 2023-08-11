@@ -134,7 +134,7 @@
                         <b>Decorators : </b>
                         <br />
                         <code>
-                            @ApiProperty({description: &#x27;The meeting details&#x27;, type: MeetingSchema})<br />
+                            @ApiProperty({description: &#x27;The meeting details&#x27;, type: BookingSchema})<br />
                         </code>
                     </td>
                 </tr>
@@ -160,10 +160,10 @@
 
     <div class="tab-pane fade  tab-source-code" id="source">
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { ApiProperty } from &#x27;@nestjs/swagger&#x27;;
-import { Meeting, MeetingSchema } from &#x27;../entities/meeting.schema&#x27;;
+import { Meeting, BookingSchema } from &#x27;../entities/meeting.schema&#x27;;
 
 class BookRequestResponse {
-  @ApiProperty({ description: &#x27;The meeting details&#x27;, type: MeetingSchema })
+  @ApiProperty({ description: &#x27;The meeting details&#x27;, type: BookingSchema })
   meeting: Meeting;
 }
 

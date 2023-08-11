@@ -1,6 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { MeetingSchema } from '../entities/meeting.schema';
-import { IMeeting } from '../entities/meeting.interface';
 
 class CreateBookingResponseDto {
   @ApiProperty({

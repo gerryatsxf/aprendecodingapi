@@ -1,4 +1,4 @@
-export class SessionCompletedDto {
+export class StripeSessionCompletedDto {
   id: string;
   object: string;
   after_expiration: null;

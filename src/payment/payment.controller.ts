@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { ApiTags } from '@nestjs/swagger';
+import { SessionInfo } from "../session/decorators/session-info.decorator";
 
 @ApiTags('Payment')
 @Controller('payment')
@@ -18,6 +19,7 @@ export class PaymentController {
   paymentSuccess(
     @Req() request: RawBodyRequest<Request>,
     @Res() response: Response,
+    @SessionInfo() sessionInfo,
   ) {
     const stripeSignature = request.headers['stripe-signature'];
     const endpointSecret =
@@ -28,6 +30,7 @@ export class PaymentController {
       stripeSignature,
       endpointSecret,
       response,
+      sessionInfo,
     );
   }
 }

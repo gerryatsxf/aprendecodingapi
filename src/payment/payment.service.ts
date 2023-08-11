@@ -4,7 +4,10 @@ import 'dotenv/config';
 import { NotificationService } from 'src/notification/notification.service';
 import { SendNotificationRequestDto } from 'src/notification/dto/send-notification-request.dto';
 import { plainToInstance } from 'class-transformer';
-import { SessionCompletedDto } from './dto/session-completed.dto';
+import { StripeSessionCompletedDto } from './dto/stripe-session-completed.dto';
+import { MeetingService } from '../meeting/meeting.service';
+import { BookingService } from '../booking/booking.service';
+import CreateMeetingRequestDto from '../meeting/dto/create-meeting-request.dto';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2022-11-15',
@@ -12,11 +15,21 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 
 @Injectable()
 export class PaymentService {
-  constructor(private notificationService: NotificationService) {}
+  constructor(
+    private notificationService: NotificationService,
+    private readonly bookingService: BookingService,
+    private readonly meetingService: MeetingService,
+  ) {}
 
-  async paymentSuccess(request, stripeSignature, endpointSecret, response) {
+  async paymentSuccess(
+    request,
+    stripeSignature,
+    endpointSecret,
+    response,
+    sessionInfo,
+  ) {
+    // make sure this event was sent from Stripe
     let event;
-
     try {
       event = stripe.webhooks.constructEvent(
         request.rawBody,
@@ -28,23 +41,37 @@ export class PaymentService {
       return;
     }
 
+    // Handle the checkout.session.completed event
     switch (event.type) {
       case 'checkout.session.completed':
-        const sessionCompleted = plainToInstance(
-          SessionCompletedDto,
-          event.data.object,
+        // Search for booking reservation in DB
+        const booking = await this.bookingService.getBookingBySessionId(
+          sessionInfo.id,
         );
-        const customerEmail = sessionCompleted.customer_details.email;
-        const notificationRequest = new SendNotificationRequestDto();
-        notificationRequest.email = customerEmail;
-        notificationRequest.guestName = sessionCompleted.customer_details.name;
-        // const createMeeting = new CreateMeetingRequestDto();
-        // createMeeting.timestamp = request.;
+        if (!booking) {
+          response.sendStatus(400).send(`Booking not found`);
+          return;
+        }
+
+        // Create meeting
+        const createMeeting = new CreateMeetingRequestDto();
+        createMeeting.timestamp = booking.meetingStartTimestamp;
         // createMeeting.type = customerEmail;
         // createMeeting.displayName = customerEmail;
         // const meeting = await this.meetingService.createMeeting();
 
-        this.notificationService.sendNotification(
+        // Send notification to guest
+        const stripeSessionCompleted = plainToInstance(
+          StripeSessionCompletedDto,
+          event.data.object,
+        );
+        const customerEmail = stripeSessionCompleted.customer_details.email;
+        const notificationRequest = new SendNotificationRequestDto();
+        notificationRequest.email = customerEmail;
+        notificationRequest.guestName =
+          stripeSessionCompleted.customer_details.name;
+
+        await this.notificationService.sendNotification(
           notificationRequest,
           {} as any,
         );

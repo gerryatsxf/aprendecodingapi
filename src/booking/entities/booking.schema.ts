@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 
-export const MeetingSchema = new mongoose.Schema({
+export const BookingSchema = new mongoose.Schema({
   meetingStartTimestamp: {
     type: Number,
     required: true,
@@ -14,24 +14,24 @@ export const MeetingSchema = new mongoose.Schema({
   sessionId: {
     type: String,
     required: true,
-    description: 'The session ID related to the meeting',
+    description: 'The session ID related to the booking',
   },
   status: {
     type: String,
     required: true,
     enum: ['pending', 'confirmed', 'cancelled'], // Add other statuses if needed
-    description: 'The status of the meeting',
+    description: 'The status of the booking',
   },
   type: {
     type: String,
     required: true,
     enum: ['tutoring', 'consultancy'],
-    description: 'The type of meeting',
+    description: 'The type of booking',
   },
-  bookingReservationExpiresTimestamp: {
+  paymentExpirationTimestamp: {
     type: Number,
     required: true,
-    description: 'The expiration timestamp of the meeting',
+    description: 'The expiration timestamp of the payment for the booking',
   },
   guestTimezone: {
     type: String,

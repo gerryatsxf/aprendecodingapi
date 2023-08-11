@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { MeetingService } from './meeting.service';
+import { BookingService } from './booking.service';
 import { HttpModule } from '@nestjs/axios';
 import { FreeSlotService } from '../free-slot/free-slot.service';
 import { FreeSlotModule } from '../free-slot/free-slot.module';
@@ -9,7 +9,7 @@ import { AvailabilityService } from '../availability/availability.service';
 import { AvailabilityModule } from '../availability/availability.module';
 import { CalendarModule } from '../calendar/calendar.module';
 import { CalendarService } from '../calendar/calendar.service';
-import { MeetingController } from './meeting.controller';
+import { BookingController } from './booking.controller';
 import { SessionModule } from '../session/session.module';
 import { SessionService } from '../session/session.service';
 import { SessionSchema } from '../session/entities/session.schema';
@@ -25,12 +25,12 @@ import { EncryptionService } from '../encryption/encryption.service';
     CalendarModule,
     SessionModule,
     MongooseModule.forFeature([{ name: 'session', schema: SessionSchema }]),
-    MongooseModule.forFeature([{ name: 'meeting', schema: BookingSchema }]),
+    MongooseModule.forFeature([{ name: 'booking', schema: BookingSchema }]),
   ],
   exports: [HttpModule],
-  controllers: [MeetingController],
+  controllers: [BookingController],
   providers: [
-    MeetingService,
+    BookingService,
     FreeSlotService,
     AvailabilityService,
     CalendarService,
@@ -38,4 +38,4 @@ import { EncryptionService } from '../encryption/encryption.service';
     EncryptionService,
   ],
 })
-export class MeetingModule {}
+export class BookingModule {}

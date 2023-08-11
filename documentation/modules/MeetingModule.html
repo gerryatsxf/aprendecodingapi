@@ -197,13 +197,13 @@ import { HttpModule } from &#x27;@nestjs/axios&#x27;;
 import { FreeSlotService } from &#x27;../free-slot/free-slot.service&#x27;;
 import { FreeSlotModule } from &#x27;../free-slot/free-slot.module&#x27;;
 import { MongooseModule } from &#x27;@nestjs/mongoose&#x27;;
-import { MeetingSchema } from &#x27;./entities/meeting.schema&#x27;;
+import { BookingSchema } from &#x27;./entities/meeting.schema&#x27;;
 
 @Module({
   imports: [
     HttpModule,
     FreeSlotModule,
-    MongooseModule.forFeature([{ name: &#x27;meeting&#x27;, schema: MeetingSchema }]),
+    MongooseModule.forFeature([{ name: &#x27;meeting&#x27;, schema: BookingSchema }]),
   ],
   exports: [HttpModule],
   controllers: [],
