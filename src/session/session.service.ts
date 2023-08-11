@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { CreateSessionDto } from './dto/create-session.dto';
-import { UpdateSessionDto } from './dto/update-session.dto';
+import { CreateSessionRequestDto } from './dto/create-session-request.dto';
+import { UpdateSessionRequestDto } from './dto/update-session-request.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Session } from './entities/session.schema';
+import { ISession } from './entities/session.interface';
 
 @Injectable()
 export class SessionService {
   constructor(
-    @InjectModel('session') private readonly sessionModel: Model<Session>,
+    @InjectModel('session') private readonly sessionModel: Model<ISession>,
   ) {}
-  async create(): Promise<Session> {
-    const createSessionDto = new CreateSessionDto();
+  async create(): Promise<ISession> {
+    const createSessionDto = new CreateSessionRequestDto();
     createSessionDto.timestamp = Date.now();
     createSessionDto.duration = 1000 * 60 * 60; // 1 hour in milliseconds
 
@@ -21,19 +21,21 @@ export class SessionService {
     return newSession;
   }
 
-  findAll() {
-    return `This action returns all session`;
-  }
+  // findAll() {
+  //   return `This action returns all session`;
+  // }
 
   findOne(id: number) {
     return this.sessionModel.findById(id);
   }
 
-  update(id: number, updateSessionDto: UpdateSessionDto) {
-    return this.sessionModel.findByIdAndUpdate(id, updateSessionDto);
+  update(id: number, updateSessionDto: UpdateSessionRequestDto) {
+    return this.sessionModel.findByIdAndUpdate(id, updateSessionDto, {
+      new: true,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} session`;
-  }
+  // remove(id: number) {
+  //   return `This action removes a #${id} session`;
+  // }
 }

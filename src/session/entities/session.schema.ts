@@ -12,16 +12,16 @@ export const SessionSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  status: {
+    type: String,
+    required: false,
+  },
+  processingTimestamp: {
+    type: Number,
+    required: false,
+  },
   // authenticityToken: {
   //   type: String,
   //   required: false,
   // },
 });
-
-export interface Session extends mongoose.Document {
-  _id: string;
-  timestamp: number;
-  duration: number;
-  timezone?: string;
-  // authenticityToken: string;
-}

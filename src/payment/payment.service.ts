@@ -1,11 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePaymentDto } from './dto/create-payment.dto';
-import { UpdatePaymentDto } from './dto/update-payment.dto';
 import Stripe from 'stripe';
 import 'dotenv/config';
 import { NotificationService } from 'src/notification/notification.service';
 import { SendNotificationRequestDto } from 'src/notification/dto/send-notification-request.dto';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { SessionCompletedDto } from './dto/session-completed.dto';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
@@ -32,7 +30,7 @@ export class PaymentService {
 
     switch (event.type) {
       case 'checkout.session.completed':
-        const sessionCompleted = plainToClass(
+        const sessionCompleted = plainToInstance(
           SessionCompletedDto,
           event.data.object,
         );
@@ -40,7 +38,16 @@ export class PaymentService {
         const notificationRequest = new SendNotificationRequestDto();
         notificationRequest.email = customerEmail;
         notificationRequest.guestName = sessionCompleted.customer_details.name;
-        this.notificationService.sendNotification(notificationRequest);
+        // const createMeeting = new CreateMeetingRequestDto();
+        // createMeeting.timestamp = request.;
+        // createMeeting.type = customerEmail;
+        // createMeeting.displayName = customerEmail;
+        // const meeting = await this.meetingService.createMeeting();
+
+        this.notificationService.sendNotification(
+          notificationRequest,
+          {} as any,
+        );
         break;
 
       default:

@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { SessionService } from '../../session/session.service';
-import { Session } from '../../session/entities/session.schema';
+import { ISession } from '../../session/entities/session.interface';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -18,7 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: any): Promise<Session> {
+  async validate(payload: any): Promise<ISession> {
     const session = await this.sessionService.findOne(payload.id);
     if (session) {
       return session;
