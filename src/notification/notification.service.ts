@@ -24,6 +24,8 @@ export class NotificationService {
     meeting: IMeeting,
   ) {
     // const meeting = await this.meetingService.createMeeting();
+    console.log('meeting', meeting)
+    console.log('notificationRequest', notificationRequest)
     const draft = new Draft(nylas, {
       subject: `¡Hola, ${notificationRequest.guestName}! Gracias por agendar`,
       body: `
