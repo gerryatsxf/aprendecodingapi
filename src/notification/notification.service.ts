@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { SendNotificationRequestDto } from './dto/send-notification-request.dto';
 import 'dotenv/config';
-import { IMeeting } from '../../dist/meeting/entities/meeting.interface';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Nylas = require('nylas');
 
@@ -20,7 +19,7 @@ export class NotificationService {
 
   async sendNotification(
     notificationRequest: SendNotificationRequestDto,
-    meeting: IMeeting,
+    meeting: any,
   ) {
     // const meeting = await this.meetingService.createMeeting();
     console.log('meeting', meeting);

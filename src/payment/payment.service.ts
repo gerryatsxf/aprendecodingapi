@@ -8,6 +8,9 @@ import { StripeSessionCompletedDto } from './dto/stripe-session-completed.dto';
 import { MeetingService } from '../meeting/meeting.service';
 import { BookingService } from '../booking/booking.service';
 import CreateMeetingRequestDto from '../meeting/dto/create-meeting-request.dto';
+import { IBooking } from '../booking/entities/booking.interface';
+import { CalendarService } from '../calendar/calendar.service';
+import { ScheduleEventParamsDto } from '../calendar/dto/schedule-event-params.dto';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2022-11-15',
@@ -19,6 +22,8 @@ export class PaymentService {
     private notificationService: NotificationService,
     private readonly bookingService: BookingService,
     private readonly meetingService: MeetingService,
+
+    private readonly calendarService: CalendarService,
   ) {}
 
   async paymentSuccess(
@@ -28,7 +33,7 @@ export class PaymentService {
     response,
     sessionInfo,
   ) {
-    // make sure this event was sent from Stripe
+    // Make sure this event was sent from Stripe
     let event;
     try {
       event = stripe.webhooks.constructEvent(
@@ -45,36 +50,35 @@ export class PaymentService {
     switch (event.type) {
       case 'checkout.session.completed':
         // Search for booking reservation in DB
-        const booking = await this.bookingService.getBookingBySessionId(
-          sessionInfo.id,
-        );
+        const booking: IBooking =
+          await this.bookingService.getBookingBySessionId(sessionInfo.id);
         if (!booking) {
           response.sendStatus(400).send(`Booking not found`);
           return;
         }
 
-        // Create meeting
-        const createMeeting = new CreateMeetingRequestDto();
-        createMeeting.timestamp = booking.meetingStartTimestamp;
-        // createMeeting.type = customerEmail;
-        // createMeeting.displayName = customerEmail;
-        // const meeting = await this.meetingService.createMeeting();
+        // Create vonage meeting
 
-        // Send notification to guest
         const stripeSessionCompleted = plainToInstance(
           StripeSessionCompletedDto,
           event.data.object,
         );
         const customerEmail = stripeSessionCompleted.customer_details.email;
-        const notificationRequest = new SendNotificationRequestDto();
-        notificationRequest.email = customerEmail;
-        notificationRequest.guestName =
-          stripeSessionCompleted.customer_details.name;
+        const customerName = stripeSessionCompleted.customer_details.name;
 
-        await this.notificationService.sendNotification(
-          notificationRequest,
-          {} as any,
-        );
+        // Create vonage meeting
+        const videoMeeting = await this.meetingService.createMeeting();
+
+        // Create calendar event
+        const eventParams = new ScheduleEventParamsDto();
+        eventParams.title = 'Cita con ' + customerName;
+        eventParams.description = 'Cita con ' + customerName;
+        eventParams.meetingLink = videoMeeting._links.guest_url.href;
+        eventParams.eventStartTime = booking.meetingStartTimestamp;
+        eventParams.eventEndTime = booking.meetingEndTimestamp;
+        eventParams.meetingType = booking.type;
+        eventParams.customerEmail = customerEmail;
+        await this.calendarService.scheduleEvent(eventParams);
         break;
 
       default:

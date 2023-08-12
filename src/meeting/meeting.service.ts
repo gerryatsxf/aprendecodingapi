@@ -11,22 +11,8 @@ import CreateMeetingRequestDto from './dto/create-meeting-request.dto';
 export class MeetingService {
   constructor(private readonly httpService: HttpService) {}
 
-  // async getMeetingStatus(meetingId: string): Promise<string> {
-  //   const meeting = await this.meetingModel.findById(meetingId);
-  //   if (!meeting) {
-  //     throw new BadRequestException('Meeting not found');
-  //   }
-  //   return meeting.status;
-  // }
-  // async getMeetingBySessionId(sessionId: string): Promise<IMeeting> {
-  //   const meeting = await this.meetingModel.findOne({ sessionId });
-  //   if (!meeting) {
-  //     throw new BadRequestException('Meeting not found');
-  //   }
-  //   return meeting;
-  // }
   async createMeeting(
-    meetingRequest: CreateMeetingRequestDto,
+    displayName = 'AprendeCoding - Espacio de asesorías',
   ): Promise<CreateMeetingResultDto> {
     const BASE_URL = process.env.VONAGE_API_BASE_URL;
     const headersRequest = {
@@ -36,7 +22,7 @@ export class MeetingService {
       this.httpService
         .post(
           path.join(BASE_URL, 'meetings/rooms'),
-          { display_name: meetingRequest.displayName },
+          { display_name: displayName },
           { headers: headersRequest },
         )
         .pipe(

@@ -108,6 +108,14 @@ export class BookingService {
         await this.bookingModel.findByIdAndUpdate(booking.id, {
           status: 'stale',
         });
+        // Update session status of found stale booking
+        await this.sessionService
+          .findOne(booking.sessionId)
+          .then(async (session) => {
+            const updateSession = new UpdateSessionRequestDto();
+            updateSession.status = 'processed';
+            await this.sessionService.update(session.id, updateSession);
+          });
       }
     }
 
