@@ -15,6 +15,8 @@ import { BuildEventParamsDto } from './dto/build-event-params.dto';
 import { ScheduleEventParamsDto } from './dto/schedule-event-params.dto';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Nylas = require('nylas');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { default: Event } = require('nylas/lib/models/event');
 
 Nylas.config({
   clientId: process.env.NYLAS_CLIENT_ID,
@@ -64,17 +66,16 @@ export class CalendarService {
     return nylas.calendars.list();
   }
 
-  getCalendarByName(name: string) {
+  getCalendarByName(keyname: string) {
     return nylas.calendars
       .list()
       .then((calendars: NylasCalendar[]) => {
         console.log(calendars);
-        const calendar = calendars.find((calendar: NylasCalendar) => {
-          return calendar.name === name;
+        return calendars.find((calendar: NylasCalendar) => {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          return calendar.metadata.keyname === keyname;
         });
-        if (!calendar) {
-          return calendars[0];
-        }
       })
       .catch((err) => {
         console.log(err);
@@ -171,7 +172,11 @@ export class CalendarService {
         ? 'asesorias'
         : 'consultoria';
     const event: INylasEvent = await this.buildEvent(params);
-    await event.save({ notify_participants: true });
+    await event
+      .save({ notify_participants: true })
+      .then((event: INylasEvent) => {
+        console.log(event);
+      });
     return event;
   }
 }
