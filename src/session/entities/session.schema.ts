@@ -20,6 +20,10 @@ export const SessionSchema = new mongoose.Schema({
     type: Number,
     required: false,
   },
+  clientReferenceId: {
+    type: String,
+    required: false,
+  },
   // authenticityToken: {
   //   type: String,
   //   required: false,
