@@ -35,7 +35,9 @@ export class SessionService {
     });
   }
 
-  find
+  async findByClientReferenceId(clientReferenceId: string) {
+    return this.sessionModel.findOne({ clientReferenceId });
+  }
 
   // remove(id: number) {
   //   return `This action removes a #${id} session`;

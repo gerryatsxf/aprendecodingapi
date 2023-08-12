@@ -11,6 +11,7 @@ import CreateMeetingRequestDto from '../meeting/dto/create-meeting-request.dto';
 import { IBooking } from '../booking/entities/booking.interface';
 import { CalendarService } from '../calendar/calendar.service';
 import { ScheduleEventParamsDto } from '../calendar/dto/schedule-event-params.dto';
+import { SessionService } from '../session/session.service';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2022-11-15',
@@ -24,15 +25,10 @@ export class PaymentService {
     private readonly meetingService: MeetingService,
 
     private readonly calendarService: CalendarService,
+    private readonly sessionService: SessionService,
   ) {}
 
-  async paymentSuccess(
-    request,
-    stripeSignature,
-    endpointSecret,
-    response,
-    sessionInfo,
-  ) {
+  async paymentSuccess(request, stripeSignature, endpointSecret, response) {
     // Make sure this event was sent from Stripe
     let event;
     try {
@@ -45,6 +41,18 @@ export class PaymentService {
       response.sendStatus(400).send(`Webhook Error: ${err.message}`);
       return;
     }
+
+    const stripeSessionCompleted = plainToInstance(
+      StripeSessionCompletedDto,
+      event.data.object,
+    );
+
+    // Fetch session info
+    const clientReferenceId = stripeSessionCompleted.client_reference_id;
+    const sessionInfo = await this.sessionService.findByClientReferenceId(
+      clientReferenceId,
+    );
+    // const sessionInfo = await this.sess
 
     // Handle the checkout.session.completed event
     switch (event.type) {
@@ -59,10 +67,7 @@ export class PaymentService {
 
         // Create vonage meeting
 
-        const stripeSessionCompleted = plainToInstance(
-          StripeSessionCompletedDto,
-          event.data.object,
-        );
+
         const customerEmail = stripeSessionCompleted.customer_details.email;
         const customerName = stripeSessionCompleted.customer_details.name;
 
