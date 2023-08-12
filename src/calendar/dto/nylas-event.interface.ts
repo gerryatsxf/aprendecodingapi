@@ -23,8 +23,8 @@ interface NylasEventSaveOptions {
 }
 
 interface NylasEventWhen {
-  startTime: number;
-  endTime: number;
+  start_time: number;
+  end_time: number;
 }
 
 interface NylasEventMetadata {
