@@ -77,8 +77,14 @@ export class PaymentService {
         const eventParams = new ScheduleEventParamsDto();
         eventParams.title = 'Cita con ' + customerName;
         eventParams.description = 'Cita con ' + customerName;
-        eventParams.meetingLink = videoMeeting._links.guest_url.href;
-        console.log({ booking });
+        eventParams.guestMeetingLink = videoMeeting._links.guest_url.href;
+        eventParams.hostMeetingLink = videoMeeting._links.host_url.href;
+        // console.log({ booking });
+        eventParams.description = this.getEventDescription(
+          customerName,
+          customerEmail,
+          eventParams.hostMeetingLink,
+        );
         eventParams.eventStartTime = booking.meetingStartTimestamp;
         eventParams.eventEndTime = booking.meetingEndTimestamp;
         eventParams.meetingType = booking.type;
@@ -92,5 +98,12 @@ export class PaymentService {
     }
 
     response.sendStatus(200);
+  }
+
+  getEventDescription(customerName, customerEmail, hostLink) {
+    return `
+      Tienes una sesión agendada con ${customerName} (${customerEmail}).
+      Puedes acceder a la sesión en ${hostLink}
+    `;
   }
 }

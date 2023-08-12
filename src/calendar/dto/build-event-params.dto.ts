@@ -15,8 +15,9 @@ export class BuildEventParamsDto {
   eventStartTime: number;
   eventEndTime: number;
   eventType: string;
-  
-  meetingLink: string;
+
   customerName: string;
   customerEmail: string;
+  guestMeetingLink: string;
+  hostMeetingLink: string;
 }

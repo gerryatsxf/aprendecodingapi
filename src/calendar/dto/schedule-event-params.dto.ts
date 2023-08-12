@@ -6,9 +6,10 @@ export class ScheduleEventParamsDto {
   eventEndTime: number; // End time of the event
   meetingType: string; // Type of meeting (tutoring, consultancy)
 
-  meetingLink: string; // Link to the meeting (optional)
+  guestMeetingLink: string; // Link to the meeting (optional)
 
   customerEmail: string; // Email of the customer
   // location?: string; // Location of the event (optional)
   customerName: string;
+  hostMeetingLink: string;
 }
