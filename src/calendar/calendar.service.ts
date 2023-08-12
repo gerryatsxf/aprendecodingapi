@@ -82,6 +82,19 @@ export class CalendarService {
       });
   }
 
+  getPrimaryCalendar() {
+    return nylas.calendars
+      .list()
+      .then((calendars: NylasCalendar[]) => {
+        return calendars.find((calendar: NylasCalendar) => {
+          return calendar.isPrimary;
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
   findOne(id: string) {
     return nylas.calendars.find(id);
   }
@@ -122,13 +135,9 @@ export class CalendarService {
       start_time: params.eventStartTime,
       end_time: params.eventEndTime,
     };
-    // event.start = params.eventStartTime;
-    // event.end = params.eventEndTime;
-    // event.when.startTime = params.eventStartTime;
-    // event.when.endTime = params.eventEndTime;
     event.metadata = { event_type: params.eventType };
     event.busy = true;
-    event.calendarId = await this.getCalendarByName(params.calendarName).then(
+    event.calendarId = await this.getPrimaryCalendar().then(
       (calendar: NylasCalendar) => {
         console.log({ calendar });
         return calendar.id;
@@ -157,7 +166,7 @@ export class CalendarService {
         type: EventNotificationType.Email,
       }),
     ];
-    console.log({ event })
+    console.log({ event });
     return event;
   }
 
