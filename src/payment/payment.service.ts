@@ -67,7 +67,6 @@ export class PaymentService {
 
         // Create vonage meeting
 
-
         const customerEmail = stripeSessionCompleted.customer_details.email;
         const customerName = stripeSessionCompleted.customer_details.name;
 
@@ -79,6 +78,7 @@ export class PaymentService {
         eventParams.title = 'Cita con ' + customerName;
         eventParams.description = 'Cita con ' + customerName;
         eventParams.meetingLink = videoMeeting._links.guest_url.href;
+        console.log({ booking });
         eventParams.eventStartTime = booking.meetingStartTimestamp;
         eventParams.eventEndTime = booking.meetingEndTimestamp;
         eventParams.meetingType = booking.type;

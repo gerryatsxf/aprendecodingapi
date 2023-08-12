@@ -70,7 +70,6 @@ export class CalendarService {
     return nylas.calendars
       .list()
       .then((calendars: NylasCalendar[]) => {
-        console.log(calendars);
         return calendars.find((calendar: NylasCalendar) => {
           const metadata = calendar.metadata ? calendar.metadata : {};
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -129,6 +128,7 @@ export class CalendarService {
     event.busy = true;
     event.calendarId = await this.getCalendarByName(params.calendarName).then(
       (calendar: NylasCalendar) => {
+        console.log({ calendar });
         return calendar.id;
       },
     );
@@ -155,6 +155,7 @@ export class CalendarService {
         type: EventNotificationType.Email,
       }),
     ];
+    console.log({ event })
     return event;
   }
 
