@@ -79,8 +79,8 @@ export class PaymentService {
         eventParams.description = 'Cita con ' + customerName;
         eventParams.meetingLink = videoMeeting._links.guest_url.href;
         console.log({ booking });
-        eventParams.eventStartTime = booking.meetingStartTimestamp * 1000;
-        eventParams.eventEndTime = booking.meetingEndTimestamp * 1000;
+        eventParams.eventStartTime = booking.meetingStartTimestamp;
+        eventParams.eventEndTime = booking.meetingEndTimestamp;
         eventParams.meetingType = booking.type;
         eventParams.customerEmail = customerEmail;
         await this.calendarService.scheduleEvent(eventParams);
