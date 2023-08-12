@@ -15,4 +15,8 @@ export class BuildEventParamsDto {
   eventStartTime: number;
   eventEndTime: number;
   eventType: string;
+  
+  meetingLink: string;
+  customerName: string;
+  customerEmail: string;
 }

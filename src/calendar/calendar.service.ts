@@ -139,23 +139,22 @@ export class CalendarService {
     event.busy = true;
     event.calendarId = await this.getPrimaryCalendar().then(
       (calendar: NylasCalendar) => {
-        console.log({ calendar });
         return calendar.id;
       },
     );
     event.conferencing = new EventConferencing({
-      provider: 'Zoom Meeting',
+      provider: 'Videollamada de Vonage',
       details: {
-        url: 'https://us02web.zoom.us/j/****************',
-        meetingCode: '213',
-        password: 'xyz',
-        phone: ['+11234567890'],
+        url: params.meetingLink,
+        // meetingCode: '213',
+        // password: 'xyz',
+        // phone: ['+11234567890'],
       },
     });
     event.participants = [
       new EventParticipant({
-        name: 'My Nylas Friend',
-        email: 'swag@nylas.com',
+        name: params.customerName,
+        email: params.customerEmail,
       }),
     ];
     event.notifications = [
@@ -180,6 +179,9 @@ export class CalendarService {
     params.eventStartTime = scheduleEventParamsDto.eventStartTime;
     params.eventEndTime = scheduleEventParamsDto.eventEndTime;
     params.eventType = scheduleEventParamsDto.meetingType;
+    params.meetingLink = scheduleEventParamsDto.meetingLink;
+    params.customerName = scheduleEventParamsDto.customerName;
+    params.customerEmail = scheduleEventParamsDto.customerEmail;
     params.calendarName =
       scheduleEventParamsDto.meetingType === 'tutoring'
         ? 'asesorias'

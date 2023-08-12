@@ -47,10 +47,10 @@ export class FreeSlotService {
               workSlot.startTime <= new Date().getTime() &&
               !busySlots.some((busySlot) => {
                 return (
-                  (workSlot.startTime > busySlot.startTime &&
-                    workSlot.startTime < busySlot.endTime) || // start time is in the middle of the busy slot
+                  (workSlot.startTime >= busySlot.startTime &&
+                    workSlot.startTime < busySlot.endTime) || // start time is in the middle of the busy slot, or starts at the same time
                   (workSlot.endTime > busySlot.startTime &&
-                    workSlot.endTime < busySlot.endTime) || // end time is in the middle of the busy slot
+                    workSlot.endTime <= busySlot.endTime) || // end time is in the middle of the busy slot, or ends at the same time
                   (workSlot.startTime == busySlot.startTime &&
                     workSlot.endTime == busySlot.endTime) // work slot is exactly the same as the busy slot
                 );

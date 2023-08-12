@@ -83,6 +83,7 @@ export class PaymentService {
         eventParams.eventEndTime = booking.meetingEndTimestamp;
         eventParams.meetingType = booking.type;
         eventParams.customerEmail = customerEmail;
+        eventParams.customerName = customerName;
         await this.calendarService.scheduleEvent(eventParams);
         break;
 

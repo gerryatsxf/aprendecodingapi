@@ -10,4 +10,5 @@ export class ScheduleEventParamsDto {
 
   customerEmail: string; // Email of the customer
   // location?: string; // Location of the event (optional)
+  customerName: string;
 }
