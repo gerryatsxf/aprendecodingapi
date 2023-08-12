@@ -68,9 +68,13 @@ export class CalendarService {
     return nylas.calendars
       .list()
       .then((calendars: NylasCalendar[]) => {
-        return calendars.find((calendar: NylasCalendar) => {
+        console.log(calendars);
+        const calendar = calendars.find((calendar: NylasCalendar) => {
           return calendar.name === name;
         });
+        if (!calendar) {
+          return calendars[0];
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -116,7 +120,7 @@ export class CalendarService {
     event.when = {
       startTime: params.eventStartTime,
       endTime: params.eventEndTime,
-    }
+    };
     // event.when.startTime = params.eventStartTime;
     // event.when.endTime = params.eventEndTime;
     event.metadata = { event_type: params.eventType };
