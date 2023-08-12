@@ -3,6 +3,8 @@ import EventParticipant from 'nylas/lib/models/event-participant';
 import EventNotification from 'nylas/lib/models/event-notification';
 
 export interface INylasEvent {
+  end: number;
+  start: number;
   title: string;
   location: string;
   description: string;

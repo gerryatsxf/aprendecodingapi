@@ -118,10 +118,12 @@ export class CalendarService {
     event.title = params.title;
     event.location = params.location;
     event.description = params.description;
-    event.when = {
-      startTime: params.eventStartTime,
-      endTime: params.eventEndTime,
-    };
+    // event.when = {
+    //   startTime: params.eventStartTime,
+    //   endTime: params.eventEndTime,
+    // };
+    event.start = params.eventStartTime;
+    event.end = params.eventEndTime;
     // event.when.startTime = params.eventStartTime;
     // event.when.endTime = params.eventEndTime;
     event.metadata = { event_type: params.eventType };
