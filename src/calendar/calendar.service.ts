@@ -72,9 +72,10 @@ export class CalendarService {
       .then((calendars: NylasCalendar[]) => {
         console.log(calendars);
         return calendars.find((calendar: NylasCalendar) => {
+          const metadata = calendar.metadata ? calendar.metadata : {};
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          return calendar.metadata.keyname === keyname;
+          return metadata.keyname ? metadata.keyname === keyname : '';
         });
       })
       .catch((err) => {
