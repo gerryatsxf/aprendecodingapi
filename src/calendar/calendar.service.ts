@@ -119,8 +119,8 @@ export class CalendarService {
     event.location = params.location;
     event.description = params.description;
     event.when = {
-      startTime: params.eventStartTime,
-      endTime: params.eventEndTime,
+      start_time: params.eventStartTime,
+      end_time: params.eventEndTime,
     };
     // event.start = params.eventStartTime;
     // event.end = params.eventEndTime;
