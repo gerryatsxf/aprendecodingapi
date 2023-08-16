@@ -77,6 +77,7 @@ export class BookingService {
     sessionInfo: ISession,
   ) {
     // Check if slot is not free
+    // this is just a test comment
     const freeSlotsData = await this.freeSlotService.getFreeSlots();
     const isSlotFree = freeSlotsData.freeSlots.some(
       (slot: GuestFreeSlotDto) =>
