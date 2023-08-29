@@ -25,7 +25,6 @@ import { SessionInfo } from '../session/decorators/session-info.decorator';
 export class MeetingController {
   constructor(private readonly meetingService: MeetingService) {}
 
-
   // New endpoint for getting meeting status
   // @UseGuards(JwtAuthGuard)
   // @Get('status')

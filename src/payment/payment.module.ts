@@ -18,8 +18,8 @@ import { AvailabilityModule } from '../availability/availability.module';
 import { AvailabilityService } from '../availability/availability.service';
 import { CalendarModule } from '../calendar/calendar.module';
 import { CalendarService } from '../calendar/calendar.service';
-import { MeetingModule } from "../meeting/meeting.module";
-import { MeetingService } from "../meeting/meeting.service";
+import { MeetingModule } from '../meeting/meeting.module';
+import { MeetingService } from '../meeting/meeting.service';
 @Module({
   imports: [
     NotificationModule,
@@ -31,7 +31,7 @@ import { MeetingService } from "../meeting/meeting.service";
     MongooseModule.forFeature([{ name: 'booking', schema: BookingSchema }]),
     AvailabilityModule,
     CalendarModule,
-    MeetingModule
+    MeetingModule,
   ],
   controllers: [PaymentController],
   providers: [
@@ -43,7 +43,7 @@ import { MeetingService } from "../meeting/meeting.service";
     EncryptionService,
     AvailabilityService,
     CalendarService,
-    MeetingService
+    MeetingService,
   ],
 })
 export class PaymentModule {}

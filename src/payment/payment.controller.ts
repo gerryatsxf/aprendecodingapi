@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { ApiTags } from '@nestjs/swagger';
-import { SessionInfo } from "../session/decorators/session-info.decorator";
 
 @ApiTags('Payment')
 @Controller('payment')
@@ -24,12 +23,11 @@ export class PaymentController {
     const endpointSecret =
       process.env.STRIPE_PAYMENT_SUCCESS_WEBHOOK_SECRET_KEY;
 
-
     return this.paymentService.paymentSuccess(
       request,
       stripeSignature,
       endpointSecret,
-      response
+      response,
     );
   }
 }

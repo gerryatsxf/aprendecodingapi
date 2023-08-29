@@ -2,12 +2,10 @@ import { Injectable } from '@nestjs/common';
 import Stripe from 'stripe';
 import 'dotenv/config';
 import { NotificationService } from 'src/notification/notification.service';
-import { SendNotificationRequestDto } from 'src/notification/dto/send-notification-request.dto';
 import { plainToInstance } from 'class-transformer';
 import { StripeSessionCompletedDto } from './dto/stripe-session-completed.dto';
 import { MeetingService } from '../meeting/meeting.service';
 import { BookingService } from '../booking/booking.service';
-import CreateMeetingRequestDto from '../meeting/dto/create-meeting-request.dto';
 import { IBooking } from '../booking/entities/booking.interface';
 import { CalendarService } from '../calendar/calendar.service';
 import { ScheduleEventParamsDto } from '../calendar/dto/schedule-event-params.dto';
@@ -52,7 +50,6 @@ export class PaymentService {
     const sessionInfo = await this.sessionService.findByClientReferenceId(
       clientReferenceId,
     );
-    // const sessionInfo = await this.sess
 
     // Handle the checkout.session.completed event
     switch (event.type) {
@@ -66,7 +63,6 @@ export class PaymentService {
         }
 
         // Create vonage meeting
-
         const customerEmail = stripeSessionCompleted.customer_details.email;
         const customerName = stripeSessionCompleted.customer_details.name;
 
@@ -79,7 +75,6 @@ export class PaymentService {
         eventParams.description = 'Cita con ' + customerName;
         eventParams.guestMeetingLink = videoMeeting._links.guest_url.href;
         eventParams.hostMeetingLink = videoMeeting._links.host_url.href;
-        // console.log({ booking });
         eventParams.description = this.getEventDescription(
           customerName,
           customerEmail,
@@ -91,6 +86,9 @@ export class PaymentService {
         eventParams.customerEmail = customerEmail;
         eventParams.customerName = customerName;
         await this.calendarService.scheduleEvent(eventParams);
+
+        // Update booking and session status
+        await this.bookingService.updateBookingStatus(booking.id, 'paid');
         break;
 
       default:

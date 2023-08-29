@@ -17,6 +17,7 @@ import { BookingService } from './booking.service';
 import CreateBookingRequestDto from './dto/create-booking-request.dto';
 import CreateBookingResponseDto from './dto/create-booking.response';
 import { SessionInfo } from '../session/decorators/session-info.decorator';
+import { GetBookingStatusResponse } from "./dto/get-booking-status-response";
 
 @ApiTags('Booking')
 @Controller('booking')
@@ -51,13 +52,13 @@ export class BookingController {
   @ApiResponse({
     status: 200,
     description: 'Booking status retrieved successfully.',
-    type: String,
+    type: GetBookingStatusResponse,
   })
   @ApiResponse({
     status: 400,
     description: 'Booking not found.',
   })
-  getBookingStatus(@SessionInfo() sessionInfo): Promise<string> {
+  getBookingStatus(@SessionInfo() sessionInfo): Promise<GetBookingStatusResponse> {
     const sessionId = sessionInfo.id;
     return this.bookingService
       .getBookingBySessionId(sessionId)
@@ -65,7 +66,7 @@ export class BookingController {
         if (!booking) {
           throw new BadRequestException('Booking not found');
         }
-        const response = {} as any;
+        const response = {} as GetBookingStatusResponse;
         response.bookingStatus = booking.status;
         response.sessionStatus = sessionInfo.status;
         return response;

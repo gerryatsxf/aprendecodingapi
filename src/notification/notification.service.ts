@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { SendNotificationRequestDto } from './dto/send-notification-request.dto';
 import 'dotenv/config';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
+import Draft from 'nylas/lib/models/draft';
+
 const Nylas = require('nylas');
 
 Nylas.config({
@@ -10,8 +12,7 @@ Nylas.config({
 });
 
 const nylas = Nylas.with(process.env.NYLAS_MAIN_ACCOUNT_ACCESS_TOKEN);
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { default: Draft } = require('nylas/lib/models/draft');
+
 
 @Injectable()
 export class NotificationService {

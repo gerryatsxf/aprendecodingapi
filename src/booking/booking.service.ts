@@ -161,4 +161,8 @@ export class BookingService {
       clientReferenceId,
     };
   }
+
+  async updateBookingStatus(bookingId: string, status: string) {
+    return this.bookingModel.findByIdAndUpdate(bookingId, { status: status });
+  }
 }
