@@ -22,7 +22,7 @@ export class BookingService {
     private readonly freeSlotService: FreeSlotService,
     private readonly sessionService: SessionService,
     private readonly encryptionService: EncryptionService,
-    @InjectModel('booking') private readonly bookingModel: Model<IBooking>,
+    @InjectModel('Booking') private readonly bookingModel: Model<IBooking>,
   ) {}
 
   async requestBooking(

@@ -13,6 +13,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import 'dotenv/config';
 import { AuthModule } from './auth/auth.module';
 import { BookingModule } from './booking/booking.module';
+import { ProductModule } from './product/product.module';
+import { CartModule } from './cart/cart.module';
 //console.log(process.env.MONGO_DB_CONNECTION_URL);
 
 const MONGO_DB_CONNECTION_URL = `${process.env.MONGO_DB_PROTOCOL}://${process.env.MONGO_DB_USER}:${process.env.MONGO_DB_PASSWORD}@${process.env.MONGO_DB_HOST}/?retryWrites=true&w=majority`;
@@ -35,6 +37,8 @@ console.log(MONGO_DB_CONNECTION_URL);
     }),
     MongooseModule.forRoot(MONGO_DB_CONNECTION_URL),
     BookingModule,
+    ProductModule,
+    CartModule,
   ],
   controllers: [],
   providers: [AppService],

@@ -11,7 +11,7 @@ import { EncryptionModule } from '../encryption/encryption.module';
 @Module({
   imports: [
     // Setting up Mongoose feature for session using its schema
-    MongooseModule.forFeature([{ name: 'session', schema: SessionSchema }]),
+    MongooseModule.forFeature([{ name: 'Session', schema: SessionSchema }]),
     EncryptionModule,
   ],
   controllers: [], // No controllers for this module

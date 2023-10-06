@@ -8,7 +8,7 @@ import { ISession } from './entities/session.interface';
 @Injectable()
 export class SessionService {
   constructor(
-    @InjectModel('session') private readonly sessionModel: Model<ISession>,
+    @InjectModel('Session') private readonly sessionModel: Model<ISession>,
   ) {}
   async create(): Promise<ISession> {
     const createSessionDto = new CreateSessionRequestDto();
