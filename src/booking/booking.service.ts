@@ -140,7 +140,7 @@ export class BookingService {
       meetingStartTimestamp: bookRequest.timestamp,
       meetingEndTimestamp: bookRequest.timestamp + meetingDurationTime,
       sessionId: sessionInfo.id,
-      status: PaymentStatusEnum.Stale,
+      status: PaymentStatusEnum.Pending,
       type: bookRequest.type,
       paymentExpirationTimestamp:
         Math.ceil(new Date().getTime() / 1000) + paymentExpirationTime,
@@ -172,7 +172,10 @@ export class BookingService {
       throw new BadRequestException('Booking not found');
     }
     if (booking.status == PaymentStatusEnum.Pending) {
-      if (booking.paymentExpirationTimestamp < new Date().getTime()) {
+      if (
+        booking.paymentExpirationTimestamp <
+        Math.floor(new Date().getTime() / 1000)
+      ) {
         booking = await this.bookingModel.findByIdAndUpdate(
           booking.id,
           {
