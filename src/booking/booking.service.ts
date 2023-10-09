@@ -172,7 +172,7 @@ export class BookingService {
       throw new BadRequestException('Booking not found');
     }
     if (booking.status == PaymentStatusEnum.Pending) {
-      if (booking.paymentExpirationTimestamp > new Date().getTime()) {
+      if (booking.paymentExpirationTimestamp < new Date().getTime()) {
         booking = await this.bookingModel.findByIdAndUpdate(
           booking.id,
           {
