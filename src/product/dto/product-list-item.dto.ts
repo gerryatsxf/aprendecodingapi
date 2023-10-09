@@ -1,7 +1,7 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { ProductDto } from "./product.dto";
+import { ApiProperty } from '@nestjs/swagger';
+import { ProductDto } from './product.dto';
 
-export  class ProductListItemDto {
+export class ProductListItemDto {
   @ApiProperty()
   id: string;
 

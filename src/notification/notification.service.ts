@@ -13,7 +13,6 @@ Nylas.config({
 
 const nylas = Nylas.with(process.env.NYLAS_MAIN_ACCOUNT_ACCESS_TOKEN);
 
-
 @Injectable()
 export class NotificationService {
   constructor() {}

@@ -1,3 +1,1 @@
-export class CartLineItemDto {
-    
-}
+export class CartLineItemDto {}

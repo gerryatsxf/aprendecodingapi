@@ -1,9 +1,9 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
 export class RemoveProductItemsFromCart {
-    @ApiProperty({
-        type: 'number',
-        required: true
-    })
-    quantity: number 
+  @ApiProperty({
+    type: 'number',
+    required: true,
+  })
+  quantity: number;
 }

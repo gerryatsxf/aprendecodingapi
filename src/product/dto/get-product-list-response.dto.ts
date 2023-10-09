@@ -1,5 +1,5 @@
-import { ProductDto } from "./product.dto";
+import { ProductDto } from './product.dto';
 
 export class GetProductListResponseDto {
-    products: ProductDto[]
+  products: ProductDto[];
 }

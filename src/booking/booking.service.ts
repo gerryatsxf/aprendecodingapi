@@ -14,6 +14,8 @@ import { UpdateSessionRequestDto } from '../session/dto/update-session-request.d
 import { EncryptionService } from '../encryption/encryption.service';
 import { sha512 } from 'hash36';
 import { GuestFreeSlotDto } from '../availability/dto/guest-free-slot.dto';
+import { PaymentStatusEnum } from '../payment/payment-status.enum';
+import { GetBookingStatusResponse } from './dto/get-booking-status-response';
 
 @Injectable()
 export class BookingService {
@@ -77,7 +79,6 @@ export class BookingService {
     sessionInfo: ISession,
   ) {
     // Check if slot is not free
-    // this is just a test comment
     const freeSlotsData = await this.freeSlotService.getFreeSlots();
     const isSlotFree = freeSlotsData.freeSlots.some(
       (slot: GuestFreeSlotDto) =>
@@ -85,7 +86,9 @@ export class BookingService {
     );
     if (!isSlotFree) {
       // REJECT if slot is not free
-      throw new BadRequestException('Meeting already exists at requested time');
+      throw new BadRequestException(
+        'Time slot is already busy at requested time',
+      );
     }
 
     // Check if valid booking exists already for requested time
@@ -93,21 +96,21 @@ export class BookingService {
       bookingStartTimestamp: bookRequest.timestamp,
     });
 
-    if (booking && booking.status == 'paid') {
+    if (booking && booking.status == PaymentStatusEnum.Paid) {
       // REJECT if found booking is paid
       throw new BadRequestException(
-        'Confirmed booking already exists for requested time',
+        'Confirmed booking already exists at requested time slot',
       );
-    } else if (booking && booking.status == 'pending') {
+    } else if (booking && booking.status == PaymentStatusEnum.Pending) {
       if (booking.paymentExpirationTimestamp <= new Date().getTime()) {
         // REJECT if found booking is still waiting for payment
         throw new BadRequestException(
-          'Pending booking already exists for requested time',
+          'Pending booking already exists at requested time slot',
         );
       } else {
         // Don't reject if found booking expiration time is overdue, and update its status to stale
         await this.bookingModel.findByIdAndUpdate(booking.id, {
-          status: 'stale',
+          status: PaymentStatusEnum.Stale,
         });
         // Update session status of found stale booking
         await this.sessionService
@@ -137,7 +140,7 @@ export class BookingService {
       meetingStartTimestamp: bookRequest.timestamp,
       meetingEndTimestamp: bookRequest.timestamp + meetingDurationTime,
       sessionId: sessionInfo.id,
-      status: 'pending',
+      status: PaymentStatusEnum.Stale,
       type: bookRequest.type,
       paymentExpirationTimestamp:
         Math.ceil(new Date().getTime() / 1000) + paymentExpirationTime,
@@ -160,6 +163,30 @@ export class BookingService {
       ).toString(),
       clientReferenceId,
     };
+  }
+
+  async getBookingStatus(sessionInfo: ISession) {
+    const sessionId = sessionInfo.id;
+    let booking: IBooking = await this.getBookingBySessionId(sessionId);
+    if (!booking) {
+      throw new BadRequestException('Booking not found');
+    }
+    if (booking.status == PaymentStatusEnum.Pending) {
+      if (booking.paymentExpirationTimestamp > new Date().getTime()) {
+        booking = await this.bookingModel.findByIdAndUpdate(
+          booking.id,
+          {
+            status: PaymentStatusEnum.Stale,
+          },
+          { new: true },
+        );
+      }
+    }
+
+    const response = {} as GetBookingStatusResponse;
+    response.bookingStatus = booking.status;
+    response.sessionStatus = sessionInfo.status;
+    return response;
   }
 
   async updateBookingStatus(bookingId: string, status: string) {

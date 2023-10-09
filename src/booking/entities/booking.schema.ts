@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import { PaymentStatusEnum } from '../../payment/payment-status.enum';
 
 export const BookingSchema = new mongoose.Schema({
   meetingStartTimestamp: {
@@ -19,7 +20,7 @@ export const BookingSchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
-    enum: ['pending', 'confirmed', 'cancelled'], // Add other statuses if needed
+    enum: Object.values(PaymentStatusEnum), // Add other statuses if needed
     description: 'The status of the booking',
   },
   type: {

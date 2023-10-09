@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { CartService } from './cart.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AddToCartRequestDto } from './dto/add-to-cart-request.dto';
@@ -15,7 +24,7 @@ export class CartController {
   @ApiBearerAuth()
   addToCart(
     @Body() addToCartRequestDto: AddToCartRequestDto,
-    @SessionInfo() sessionInfo
+    @SessionInfo() sessionInfo,
   ) {
     return this.cartService.addProduct(addToCartRequestDto, sessionInfo);
   }
@@ -25,7 +34,7 @@ export class CartController {
   @ApiBearerAuth()
   removeCartLineItemFromCart(
     @Param('cartLineItemId') cartLineItemId: string,
-    @SessionInfo() sessionInfo
+    @SessionInfo() sessionInfo,
   ) {
     return this.cartService.removeCartLineItem(cartLineItemId, sessionInfo);
   }
@@ -36,9 +45,13 @@ export class CartController {
   removeProductItemsFromCart(
     @Param('productId') productId: string,
     @Body() addToCartRequestDto: AddToCartRequestDto,
-    @SessionInfo() sessionInfo
+    @SessionInfo() sessionInfo,
   ) {
-    return this.cartService.removeProductItemsFromCart(productId, addToCartRequestDto.quantity, sessionInfo);
+    return this.cartService.removeProductItemsFromCart(
+      productId,
+      addToCartRequestDto.quantity,
+      sessionInfo,
+    );
   }
 
   @UseGuards(JwtAuthGuard)

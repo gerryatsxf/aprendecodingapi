@@ -6,9 +6,11 @@ import { HttpModule } from '@nestjs/axios';
 @Module({
   controllers: [ProductController],
   providers: [ProductService],
-  imports: [    HttpModule.register({
-    timeout: 5000,
-    maxRedirects: 5,
-  }),]
+  imports: [
+    HttpModule.register({
+      timeout: 5000,
+      maxRedirects: 5,
+    }),
+  ],
 })
 export class ProductModule {}

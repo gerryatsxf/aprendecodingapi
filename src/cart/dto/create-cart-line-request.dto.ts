@@ -1,4 +1,4 @@
 export class CreateCartLineItemRequestDto {
-    productId: string 
-    quantity: number
+  productId: string;
+  quantity: number;
 }

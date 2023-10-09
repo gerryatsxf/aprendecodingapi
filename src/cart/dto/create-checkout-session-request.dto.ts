@@ -1,5 +1,5 @@
-import { CartLineItemDto } from "./cart-line-item.dto";
+import { CartLineItemDto } from './cart-line-item.dto';
 
 export class CreateCheckoutSessionRequestDto {
-    lineItems: CartLineItemDto[]
+  lineItems: CartLineItemDto[];
 }
