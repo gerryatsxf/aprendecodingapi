@@ -44,6 +44,7 @@ export class PaymentService {
       StripeSessionCompletedDto,
       event.data.object,
     );
+    console.log(stripeSessionCompleted);
 
     // Fetch session info
     const clientReferenceId = stripeSessionCompleted.client_reference_id;
