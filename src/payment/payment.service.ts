@@ -39,7 +39,7 @@ export class PaymentService {
       response.sendStatus(400).send(`Webhook Error: ${err.message}`);
       return;
     }
-  console.log(event)
+    console.log(event);
     const stripeSessionCompleted = plainToInstance(
       StripeSessionCompletedDto,
       event.data.object,
@@ -62,13 +62,14 @@ export class PaymentService {
           response.sendStatus(400).send(`Booking not found`);
           return;
         }
-
+        console.log({ booking });
         // Create vonage meeting
         const customerEmail = stripeSessionCompleted.customer_details.email;
         const customerName = stripeSessionCompleted.customer_details.name;
 
         // Create vonage meeting
         const videoMeeting = await this.meetingService.createMeeting();
+        console.log({ videoMeeting });
 
         // Create calendar event
         const eventParams = new ScheduleEventParamsDto();
@@ -87,6 +88,7 @@ export class PaymentService {
         eventParams.customerEmail = customerEmail;
         eventParams.customerName = customerName;
         await this.calendarService.scheduleEvent(eventParams);
+        console.log('it was scheduled!')
 
         // Update booking and session status
         await this.bookingService.updateBookingStatus(booking.id, 'paid');
