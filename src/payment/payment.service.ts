@@ -39,7 +39,7 @@ export class PaymentService {
       response.sendStatus(400).send(`Webhook Error: ${err.message}`);
       return;
     }
-  console.log(event.data)
+  console.log(event)
     const stripeSessionCompleted = plainToInstance(
       StripeSessionCompletedDto,
       event.data.object,
