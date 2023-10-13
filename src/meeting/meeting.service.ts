@@ -18,6 +18,7 @@ export class MeetingService {
     const headersRequest = {
       Authorization: `Bearer ${process.env.VONAGE_JWT_365_DAYS}`,
     };
+    console.log('about to creating meeting')
     return firstValueFrom(
       this.httpService
         .post(
@@ -30,6 +31,9 @@ export class MeetingService {
           map((resp) => plainToInstance(CreateMeetingResultDto, resp.data)),
           tap((data) => console.log(data)),
         ),
-    );
+    ).catch((err) => {
+      console.log(err);
+      throw err;
+    });
   }
 }
