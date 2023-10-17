@@ -71,23 +71,26 @@ export class PaymentService {
         // const videoMeeting = await this.meetingService.createMeeting();
         // console.log({ videoMeeting });
         //
-        // // Create calendar event
-        // const eventParams = new ScheduleEventParamsDto();
-        // eventParams.title = 'Cita con ' + customerName;
-        // eventParams.description = 'Cita con ' + customerName;
+        // Create calendar event
+        const eventParams = new ScheduleEventParamsDto();
+        eventParams.title = 'Asesoría de ' + customerName;
+        eventParams.description =
+          '¡Hola, ' +
+          customerName +
+          '! Es un gusto saludarte, gracias por agendar con AprendeCoding. En breve recibirás un correo con los detalles de tu asesoría, gracias por tu preferencia. ¡Nos vemos pronto!';
         // eventParams.guestMeetingLink = videoMeeting._links.guest_url.href;
         // eventParams.hostMeetingLink = videoMeeting._links.host_url.href;
-        // eventParams.description = this.getEventDescription(
-        //   customerName,
-        //   customerEmail,
-        //   eventParams.hostMeetingLink,
-        // );
-        // eventParams.eventStartTime = booking.meetingStartTimestamp;
-        // eventParams.eventEndTime = booking.meetingEndTimestamp;
-        // eventParams.meetingType = booking.type;
-        // eventParams.customerEmail = customerEmail;
-        // eventParams.customerName = customerName;
-        // await this.calendarService.scheduleEvent(eventParams);
+        eventParams.description = this.getEventDescription(
+          customerName,
+          customerEmail,
+          eventParams.hostMeetingLink,
+        );
+        eventParams.eventStartTime = booking.meetingStartTimestamp;
+        eventParams.eventEndTime = booking.meetingEndTimestamp;
+        eventParams.meetingType = booking.type;
+        eventParams.customerEmail = customerEmail;
+        eventParams.customerName = customerName;
+        await this.calendarService.scheduleEvent(eventParams);
         // console.log('it was scheduled!');
 
         // Update booking and session status
