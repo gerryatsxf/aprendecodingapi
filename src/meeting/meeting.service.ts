@@ -11,6 +11,10 @@ import CreateMeetingRequestDto from './dto/create-meeting-request.dto';
 export class MeetingService {
   constructor(private readonly httpService: HttpService) {}
 
+  // async createTwilioMeeting(){
+  //
+  // }
+
   async createMeeting(
     displayName = 'AprendeCoding - Espacio de asesorías',
   ): Promise<CreateMeetingResultDto> {
@@ -18,7 +22,7 @@ export class MeetingService {
     const headersRequest = {
       Authorization: `Bearer ${process.env.VONAGE_JWT_365_DAYS}`,
     };
-    console.log('about to creating meeting')
+    console.log('about to creating meeting');
     return firstValueFrom(
       this.httpService
         .post(

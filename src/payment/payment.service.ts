@@ -68,27 +68,27 @@ export class PaymentService {
         const customerName = stripeSessionCompleted.customer_details.name;
 
         // Create vonage meeting
-        const videoMeeting = await this.meetingService.createMeeting();
-        console.log({ videoMeeting });
-
-        // Create calendar event
-        const eventParams = new ScheduleEventParamsDto();
-        eventParams.title = 'Cita con ' + customerName;
-        eventParams.description = 'Cita con ' + customerName;
-        eventParams.guestMeetingLink = videoMeeting._links.guest_url.href;
-        eventParams.hostMeetingLink = videoMeeting._links.host_url.href;
-        eventParams.description = this.getEventDescription(
-          customerName,
-          customerEmail,
-          eventParams.hostMeetingLink,
-        );
-        eventParams.eventStartTime = booking.meetingStartTimestamp;
-        eventParams.eventEndTime = booking.meetingEndTimestamp;
-        eventParams.meetingType = booking.type;
-        eventParams.customerEmail = customerEmail;
-        eventParams.customerName = customerName;
-        await this.calendarService.scheduleEvent(eventParams);
-        console.log('it was scheduled!')
+        // const videoMeeting = await this.meetingService.createMeeting();
+        // console.log({ videoMeeting });
+        //
+        // // Create calendar event
+        // const eventParams = new ScheduleEventParamsDto();
+        // eventParams.title = 'Cita con ' + customerName;
+        // eventParams.description = 'Cita con ' + customerName;
+        // eventParams.guestMeetingLink = videoMeeting._links.guest_url.href;
+        // eventParams.hostMeetingLink = videoMeeting._links.host_url.href;
+        // eventParams.description = this.getEventDescription(
+        //   customerName,
+        //   customerEmail,
+        //   eventParams.hostMeetingLink,
+        // );
+        // eventParams.eventStartTime = booking.meetingStartTimestamp;
+        // eventParams.eventEndTime = booking.meetingEndTimestamp;
+        // eventParams.meetingType = booking.type;
+        // eventParams.customerEmail = customerEmail;
+        // eventParams.customerName = customerName;
+        // await this.calendarService.scheduleEvent(eventParams);
+        // console.log('it was scheduled!');
 
         // Update booking and session status
         await this.bookingService.updateBookingStatus(booking.id, 'paid');
