@@ -13,8 +13,6 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
-    depends_on:
-      - mongodb
     profiles:
       - dev
 
