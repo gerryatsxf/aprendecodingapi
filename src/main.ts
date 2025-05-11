@@ -1,7 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as fs from 'fs';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+dotenv.config({ path: path.resolve(__dirname, '../env/dev.env') });
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -20,5 +24,6 @@ async function bootstrap() {
   SwaggerModule.setup('swagger', app, document);
 
   await app.listen(3002);
+  console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();

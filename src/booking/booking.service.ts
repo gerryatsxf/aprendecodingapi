@@ -167,6 +167,7 @@ export class BookingService {
 
   async getBookingStatus(sessionInfo: ISession) {
     const sessionId = sessionInfo.id;
+    console.log(sessionInfo)
     let booking: IBooking = await this.getBookingBySessionId(sessionId);
     if (!booking) {
       throw new BadRequestException('Booking not found');

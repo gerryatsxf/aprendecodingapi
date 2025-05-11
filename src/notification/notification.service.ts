@@ -1,30 +1,28 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { SendNotificationRequestDto } from './dto/send-notification-request.dto';
-import 'dotenv/config';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 import Draft from 'nylas/lib/models/draft';
 
 const Nylas = require('nylas');
 
-Nylas.config({
-  clientId: process.env.NYLAS_CLIENT_ID,
-  clientSecret: process.env.NYLAS_CLIENT_SECRET,
-});
-
-const nylas = Nylas.with(process.env.NYLAS_MAIN_ACCOUNT_ACCESS_TOKEN);
-
 @Injectable()
 export class NotificationService {
-  constructor() {}
+  private readonly nylas;
+  constructor(private configService: ConfigService) {
+    Nylas.config({
+      clientId: this.configService.get<string>('NYLAS_CLIENT_ID'),
+      clientSecret: this.configService.get<string>('NYLAS_CLIENT_SECRET'),
+    });
 
+    this.nylas = Nylas.with(this.configService.get<string>('NYLAS_MAIN_ACCOUNT_ACCESS_TOKEN'));
+  }
   async sendNotification(
     notificationRequest: SendNotificationRequestDto,
     meeting: any,
   ) {
-    // const meeting = await this.meetingService.createMeeting();
     console.log('meeting', meeting);
     console.log('notificationRequest', notificationRequest);
-    const draft = new Draft(nylas, {
+    const draft = new Draft(this.nylas, {
       subject: `¡Hola, ${notificationRequest.guestName}! Gracias por agendar`,
       body: `
         Hola, ${notificationRequest.guestName}

@@ -8,18 +8,14 @@ import { AvailabilityModule } from './availability/availability.module';
 import { FreeSlotModule } from './free-slot/free-slot.module';
 import { DateTimeModule } from './date-time/date-time.module';
 import { SessionModule } from './session/session.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import 'dotenv/config';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
 import { AuthModule } from './auth/auth.module';
 import { BookingModule } from './booking/booking.module';
 import { ProductModule } from './product/product.module';
 import { CartModule } from './cart/cart.module';
-//console.log(process.env.MONGO_DB_CONNECTION_URL);
-
-const MONGO_DB_CONNECTION_URL = `${process.env.MONGO_DB_PROTOCOL}://${process.env.MONGO_DB_USER}:${process.env.MONGO_DB_PASSWORD}@${process.env.MONGO_DB_HOST}/?retryWrites=true&w=majority`;
-
-console.log(MONGO_DB_CONNECTION_URL);
 @Module({
   imports: [
     AuthModule,
@@ -32,10 +28,26 @@ console.log(MONGO_DB_CONNECTION_URL);
     DateTimeModule,
     SessionModule,
     ConfigModule.forRoot({
-      envFilePath: '.env',
+      envFilePath: path.resolve(__dirname, '../env/dev.env'),
       isGlobal: true,
     }),
-    MongooseModule.forRoot(MONGO_DB_CONNECTION_URL),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => {
+        // const MONGO_DB_CONNECTION_URL = `${configService.get<string>('MONGO_DB_PROTOCOL')}://${configService.get<string>('MONGO_DB_USER')}:${configService.get<string>('MONGO_DB_PASSWORD')}@${configService.get<string>('MONGO_DB_HOST')}`;
+        const MONGO_DB_CONNECTION_URL = configService.get<string>('MONGO_DB_ATLAS_CONNECTION_STRING');
+        console.log('MongoDB Connection URL:', MONGO_DB_CONNECTION_URL);
+        return {
+          uri: MONGO_DB_CONNECTION_URL,
+        };
+
+        // // return { uri: 'mongodb://admin_root:admin_root@localhost:27017/?authSource=admin&authMechanism=SCRAM-SHA-1' };
+        // // return { uri: 'mongodb://admin_root:admin_root@host.docker.internal:27017/?authSource=admin&authMechanism=SCRAM-SHA-1' };
+        // return { uri: 'mongodb://admin_root:admin_root@mongodb:27017/?authSource=admin&authMechanism=SCRAM-SHA-1' };
+
+      },
+      inject: [ConfigService],
+    }),
     BookingModule,
     ProductModule,
     CartModule,

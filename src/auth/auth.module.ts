@@ -13,7 +13,7 @@ import { SessionModule } from '../session/session.module';
 const jwtFactory = (configService: ConfigService) => ({
   secret: configService.get<string>(JWT_SECRET),
   signOptions: {
-    expiresIn: configService.get<string>(JWT_EXPIRES_IN),
+    expiresIn: configService.get<string>(JWT_EXPIRES_IN), 
   },
 });
 
