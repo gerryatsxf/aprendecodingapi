@@ -29,6 +29,11 @@ export class PaymentService {
   async paymentSuccess(request, stripeSignature, endpointSecret, response) {
     // Make sure this event was sent from Stripe
     let event;
+    console.log(' ')
+    console.log('-----------------------------')
+    console.log({request: request.rawBody})
+    console.log({stripeSignature})
+    console.log({endpointSecret})
     try {
       event = stripe.webhooks.constructEvent(
         request.rawBody,
@@ -91,7 +96,7 @@ export class PaymentService {
         eventParams.customerEmail = customerEmail;
         eventParams.customerName = customerName;
         await this.calendarService.scheduleEvent(eventParams);
-        // console.log('it was scheduled!');
+        console.log('it was scheduled!');
 
         // Update booking and session status
         await this.bookingService.updateBookingStatus(booking.id, 'paid');
