@@ -67,14 +67,14 @@ export class PaymentService {
           response.sendStatus(400).send(`Booking not found`);
           return;
         }
-        console.log({ booking });
+        // console.log({ booking });
         // Create vonage meeting
         const customerEmail = stripeSessionCompleted.customer_details.email;
         const customerName = stripeSessionCompleted.customer_details.name;
 
         // Create vonage meeting
         const videoMeeting = await this.meetingService.createMeeting();
-        console.log({ videoMeeting });
+        // console.log({ videoMeeting });
         //
         // Create calendar event
         const eventParams = new ScheduleEventParamsDto();
@@ -114,8 +114,24 @@ export class PaymentService {
 
   getEventDescription(customerName, customerEmail, hostLink) {
     return `
-      Tienes una sesión agendada con ${customerName} (${customerEmail}).
-      Puedes acceder a la sesión en ${hostLink}
+      Hola, ${customerName} (${customerEmail}).
+        \n<br>
+        \n<br> Nos da mucho gusto saludarte. 
+        \n<br>
+        \n<br> Te damos una cálido bienvenida de parte de aprendecoding.com :) 
+        \n<br> Has agendado una sesión de asesoría para el XX de XX del XXXX a las XX:XX pm. 
+        \n<br> Más abajo te compartimos el link de la reunión. 
+        \n<br> Te esperamos! 
+        \n<br>
+        \n<br> Link de videollamada: ${hostLink}
+        \n<br>
+        \n<br> Atentamente, 
+        \n<br> aprendecoding.com
     `;
   }
+
+
+
+
+
 }
