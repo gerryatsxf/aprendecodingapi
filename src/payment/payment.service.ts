@@ -85,8 +85,8 @@ export class PaymentService {
           '! Es un gusto saludarte, gracias por agendar con AprendeCoding. En breve recibirás un correo con los detalles de tu asesoría, gracias por tu preferencia. ¡Nos vemos pronto!';
         // eventParams.guestMeetingLink = videoMeeting._links.guest_url.href;
         // eventParams.hostMeetingLink = videoMeeting._links.host_url.href;
-        eventParams.hostMeetingLink = videoMeeting.join_url
-        eventParams.guestMeetingLink = videoMeeting.join_url
+        eventParams.hostMeetingLink = videoMeeting.data.join_url
+        eventParams.guestMeetingLink = videoMeeting.data.join_url
         eventParams.description = this.getEventDescription(
           customerName,
           customerEmail,
