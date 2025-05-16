@@ -1,4 +1,5 @@
 export class CreateMeetingResultDto {
+  join_url?: string;
   id: string;
   display_name: string;
   metadata: any;
