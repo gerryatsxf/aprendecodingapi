@@ -73,8 +73,8 @@ export class PaymentService {
         const customerName = stripeSessionCompleted.customer_details.name;
 
         // Create vonage meeting
-        // const videoMeeting = await this.meetingService.createMeeting();
-        // console.log({ videoMeeting });
+        const videoMeeting = await this.meetingService.createMeeting();
+        console.log({ videoMeeting });
         //
         // Create calendar event
         const eventParams = new ScheduleEventParamsDto();

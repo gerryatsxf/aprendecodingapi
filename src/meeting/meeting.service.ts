@@ -18,17 +18,17 @@ export class MeetingService {
   async createMeeting(
     displayName = 'AprendeCoding - Espacio de asesorías',
   ): Promise<CreateMeetingResultDto> {
-    const BASE_URL = process.env.VONAGE_API_BASE_URL;
-    const headersRequest = {
-      Authorization: `Bearer ${process.env.VONAGE_JWT_365_DAYS}`,
-    };
+    const BASE_URL = process.env.CREATE_MEETING_URL;
+    // const headersRequest = {
+    //   Authorization: `Bearer ${process.env.VONAGE_JWT_365_DAYS}`,
+    // };
     console.log('about to creating meeting');
     return firstValueFrom(
       this.httpService
         .post(
-          path.join(BASE_URL, 'meetings/rooms'),
+          BASE_URL,
           { display_name: displayName },
-          { headers: headersRequest },
+          // { headers: headersRequest },
         )
         .pipe(
           tap((resp) => console.log(resp)),
