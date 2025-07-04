@@ -16,6 +16,6 @@ COPY  . .
 COPY ./env/dev.env ./env/dev.env
 
 # Start the server in development mode (adjust command for your framework)
-CMD ["npm", "run", "start:dev"]
+CMD ["npm", "run", "start:prod"]
 
 EXPOSE 3002
