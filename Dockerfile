@@ -1,21 +1,31 @@
-FROM node:18-alpine As development
+# --- Build Stage ---
+FROM node:18-alpine AS build
 
-# Create app directory
 WORKDIR /app
 
-# Copy package.json and install dependencies
 COPY package*.json ./
-
-# Install all dependencies including devDependencies
 RUN npm install
 
-# Copy the entire source code
-COPY  . .
-
-# Copy the environment file
+COPY . .
 COPY ./env/dev.env ./env/dev.env
 
-# Start the server in development mode (adjust command for your framework)
-CMD ["npm", "run", "start:prod"]
+RUN npm run build
+
+# --- Production Stage ---
+FROM node:18-alpine AS production
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install --only=production
+
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/env/dev.env ./env/dev.env
+
+ENV NODE_ENV=production
+ENV PORT=3002
+
+# Use dotenv-cli to load env vars and run the app
+CMD ["npx", "dotenv", "-e", "./env/dev.env", "--", "node", "dist/main"]
 
 EXPOSE 3002
