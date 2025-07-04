@@ -21,12 +21,28 @@ export class SessionService {
     return newSession;
   }
 
+  async createLeadSession(leadId: string): Promise<ISession> {
+    const createSessionDto = new CreateSessionRequestDto();
+    createSessionDto.timestamp = Date.now();
+    createSessionDto.duration = 1000 * 60 * 60; // 1 hour in milliseconds
+    createSessionDto.leadId = leadId;
+    console.log({ createSessionDto });
+    const newSession = new this.sessionModel(createSessionDto);
+    await newSession.save();
+
+    return newSession;
+  }
+
   // findAll() {
   //   return `This action returns all session`;
   // }
 
   findOne(id: string) {
     return this.sessionModel.findById(id);
+  }
+
+  findByLeadId(leadId: string) {
+    return this.sessionModel.findOne({ leadId });
   }
 
   update(id: number, updateSessionDto: Partial<UpdateSessionRequestDto>) {

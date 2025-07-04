@@ -24,6 +24,10 @@ export const SessionSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  leadId: {
+    type: String,
+    required: false,
+  },
   // authenticityToken: {
   //   type: String,
   //   required: false,

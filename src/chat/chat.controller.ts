@@ -9,7 +9,6 @@ export class ChatController {
 
   @Post()
   create(@Body() incomingMessage: IncomingMessageDto) {
-    console.log({ incomingMessage });
     const telegramMessage: TelegramMessageDto = plainToInstance(
       TelegramMessageDto,
       incomingMessage.message

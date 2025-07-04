@@ -3,4 +3,5 @@ export class CreateSessionRequestDto {
   duration: number; // milliseconds
   timezone?: string;
   status = 'lead';
+  leadId?: string
 }

@@ -14,21 +14,49 @@ export class ChatService {
   constructor(
     // private readonly httpService: HttpService,
     // private readonly freeSlotService: FreeSlotService,
-    // private readonly sessionService: SessionService,
+    private readonly sessionService: SessionService,
     // private readonly encryptionService: EncryptionService
   ) {}
 
-  readMessage(incomingMessageDto: TelegramMessageDto) {
-    console.log(incomingMessageDto);
-
-
-
-    let reply: ConversationReply = {
-      text: 'Hello gerry, how can I help you today?',
-      sender: 'bot',
-      timestamp: new Date().toISOString(),
-    };
-    return reply;
+  readMessage(incomingMessageDto: TelegramMessageDto): Promise<ConversationReply> {
+    const leadId = incomingMessageDto.chat.id.toString();
+    return this.sessionService.findByLeadId(leadId)
+      .then((lead) => {
+        if (!lead) {
+          return this.sessionService.createLeadSession(leadId)
+            .then((newSession) => {
+              console.log('New session created:', newSession);
+              return {
+                text: 'Hello gerry, how can I help you today?',
+                sender: 'bot',
+                timestamp: new Date().toISOString(),
+              };
+            })
+            .catch((error) => {
+              console.error('Error creating new session:', error);
+              return {
+                text: 'Sorry, something went wrong.',
+                sender: 'bot',
+                timestamp: new Date().toISOString(),
+              };
+            });
+        } else {
+          console.log('Existing session found:', lead);
+          return {
+            text: 'Welcome back! How can I assist you further?',
+            sender: 'bot',
+            timestamp: new Date().toISOString(),
+          };
+        }
+      })
+      .catch((error) => {
+        console.error('Error finding lead:', error);
+        return {
+          text: 'Sorry, something went wrong.',
+          sender: 'bot',
+          timestamp: new Date().toISOString(),
+        };
+      });
   }
 
   // findAll() {
@@ -47,3 +75,4 @@ export class ChatService {
   //   return `This action removes a #${id} chat`;
   // }
 }
+

@@ -18,7 +18,8 @@ import { EncryptionService } from '../encryption/encryption.service';
 
 @Module({
   imports: [
-    HttpModule
+    HttpModule,
+    SessionModule
   ],
   exports: [HttpModule],
   controllers: [ChatController],
