@@ -7,6 +7,7 @@ import { FreeSlotService } from 'src/free-slot/free-slot.service';
 import { SessionService } from 'src/session/session.service';
 import { EncryptionService } from 'src/encryption/encryption.service';
 import { ConversationReply } from './dto/conversation-reply.dto';
+import { TelegramMessageDto } from './dto/telegram-message.dto';
 
 @Injectable()
 export class ChatService {
@@ -17,7 +18,7 @@ export class ChatService {
     // private readonly encryptionService: EncryptionService
   ) {}
 
-  readMessage(incomingMessageDto: IncomingMessageDto) {
+  readMessage(incomingMessageDto: TelegramMessageDto) {
     console.log(incomingMessageDto);
 
 
