@@ -13,6 +13,7 @@ export class ChatController {
       TelegramMessageDto,
       incomingMessage.message
     );
+    console.log({ telegramMessage });
     return this.chatService.readMessage(telegramMessage);
   }
 }
