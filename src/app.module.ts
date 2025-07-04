@@ -16,6 +16,7 @@ import { AuthModule } from './auth/auth.module';
 import { BookingModule } from './booking/booking.module';
 import { ProductModule } from './product/product.module';
 import { CartModule } from './cart/cart.module';
+import { ChatModule } from './chat/chat.module';
 @Module({
   imports: [
     AuthModule,
@@ -51,6 +52,7 @@ import { CartModule } from './cart/cart.module';
     BookingModule,
     ProductModule,
     CartModule,
+    ChatModule,
   ],
   controllers: [],
   providers: [AppService],

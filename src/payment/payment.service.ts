@@ -115,18 +115,18 @@ export class PaymentService {
   getEventDescription(customerName, customerEmail, hostLink) {
     return `
       Hola, ${customerName} (${customerEmail}).
-        \n<br>
-        \n<br> Nos da mucho gusto saludarte. 
-        \n<br>
-        \n<br> Te damos una cálido bienvenida de parte de aprendecoding.com :) 
-        \n<br> Has agendado una sesión de asesoría para el XX de XX del XXXX a las XX:XX pm. 
-        \n<br> Más abajo te compartimos el link de la reunión. 
-        \n<br> Te esperamos! 
-        \n<br>
-        \n<br> Link de videollamada: ${hostLink}
-        \n<br>
-        \n<br> Atentamente, 
-        \n<br> aprendecoding.com
+        \n
+        \n Nos da mucho gusto saludarte. 
+        \n
+        \n Te damos una cálida bienvenida de parte de aprendecoding.com :) 
+        \n Has agendado una sesión de asesoría. Más abajo te compartimos el link de la reunión. 
+        \n 
+        \n Te esperamos! 
+        \n
+        \n Link de videollamada: ${hostLink}
+        \n
+        \n Atentamente, 
+        \n aprendecoding.com
     `;
   }
 
