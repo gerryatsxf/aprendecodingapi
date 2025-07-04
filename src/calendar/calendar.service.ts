@@ -17,7 +17,7 @@ import { ScheduleEventParamsDto } from './dto/schedule-event-params.dto';
 const Nylas = require('nylas');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { default: Event } = require('nylas/lib/models/event');
-
+console.log(process.env);
 Nylas.config({
   clientId: process.env.NYLAS_CLIENT_ID,
   clientSecret: process.env.NYLAS_CLIENT_SECRET,
