@@ -1,4 +1,4 @@
-import { Controller, Request, Post, UseGuards, Body } from '@nestjs/common';
+import { Controller, Request, Post, UseGuards, Body, Delete, Param } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 
@@ -11,6 +11,16 @@ export class AuthController {
   async createSession(): Promise<any> {
     return this.authService.createToken();
   }
+
+  @Delete('session/:leadId')
+  async deleteSession(
+    @Request() request,
+    @Param('leadId') leadId: string, // Get leadId from URL param
+  ): Promise<any> {
+    // You might want to validate leadId here
+    return this.authService.deleteToken(leadId);
+  }
+
 
   // TODO: find an alternate way of returning this response by using Guards
   // @All('register')

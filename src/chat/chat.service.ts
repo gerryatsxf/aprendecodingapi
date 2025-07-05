@@ -56,16 +56,22 @@ export class ChatService {
             });
         } else {
           console.log('Existing session found:', lead );
+          if( lead.status === 'processed') {
+              console.log('New session created:', lead);
+              const nextDialog = this.getNextDialog(lead,  incomingMessageDto.text);
+              const result: ConversationReply = {
+                text: nextDialog.text ,
+                sender: 'bot',
+                timestamp: new Date().toISOString(),
+                replyOptions: nextDialog.replyOptions || [],
+                leadId: leadId, // Include leadId in the reply
+              };
+              return result;
+          } else if (lead.status === 'processing') {
           const nextDialog = this.getNextDialog(lead,  incomingMessageDto.text);
-          const result: ConversationReply = {
-            text: nextDialog.text || 'Welcome back! How can I assist you further?',
-            sender: 'bot',
-            timestamp: new Date().toISOString(),
-            replyOptions: nextDialog.replyOptions || [],
-            leadId: leadId, // Include leadId in the reply
-          };
-          this.sendMessage(result);
-          return result;
+          this.sendMessage(nextDialog);
+          }
+          // return result;
         }
       })
       .catch((error) => {

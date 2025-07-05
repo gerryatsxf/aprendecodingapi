@@ -37,4 +37,14 @@ export class AuthService {
       }),
     };
   }
+
+  async deleteToken(leadId: string): Promise<any> {
+    // Logic to delete the token or session
+    // This could involve invalidating the JWT or removing the session from the database
+    const session = await this.sessionService.findByLeadId(leadId);
+    console.log({session})
+    const udpated = await this.sessionService.update(session.id, { status: 'processed' });
+    console.log({ udpated });
+    return { message: 'Session deleted successfully' };
+  }
 }

@@ -46,7 +46,7 @@ export class SessionService {
     return this.sessionModel.findOne({ leadId });
   }
 
-  update(id: number, updateSessionDto: Partial<UpdateSessionRequestDto>) {
+  update(id: string, updateSessionDto: Partial<UpdateSessionRequestDto>) {
     return this.sessionModel.findByIdAndUpdate(id, updateSessionDto, {
       new: true,
     });
