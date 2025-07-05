@@ -28,6 +28,11 @@ export const SessionSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  leadStage: {
+    type: String,
+    required: false,
+  },
+  
   // authenticityToken: {
   //   type: String,
   //   required: false,

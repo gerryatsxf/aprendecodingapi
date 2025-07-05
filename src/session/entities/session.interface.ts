@@ -3,6 +3,7 @@ import * as mongoose from 'mongoose';
 export interface ISession extends mongoose.Document {
   _id: string;
   leadId?: string;
+  leadStage?: string;
   timestamp: number;
   duration: number;
   timezone?: string;

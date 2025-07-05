@@ -4,4 +4,5 @@ export class CreateSessionRequestDto {
   timezone?: string;
   status = 'lead';
   leadId?: string
+  leadStage = 'st_greet'; // Default to 's1' for lead stage
 }

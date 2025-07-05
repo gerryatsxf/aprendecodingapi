@@ -26,6 +26,7 @@ export class SessionService {
     createSessionDto.timestamp = Date.now();
     createSessionDto.duration = 1000 * 60 * 60; // 1 hour in milliseconds
     createSessionDto.leadId = leadId;
+    createSessionDto.leadStage = 'st_greet'; // Default to 's1' for lead stage
     console.log({ createSessionDto });
     const newSession = new this.sessionModel(createSessionDto);
     await newSession.save();
