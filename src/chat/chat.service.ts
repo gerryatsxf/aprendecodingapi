@@ -65,11 +65,15 @@ export class ChatService {
           console.log('Existing session found:', lead );
 
           let nextDialog = this.getNextDialog(lead,  incomingMessageDto.text);
+          this.sendMessage(nextDialog);
           console.log(nextDialog)
+          console.log('--------------------------------')
           while(nextDialog.setNextStage !== null && nextDialog.setNextStage !== undefined) {
             // console.log(nextDialog)
-            this.sendMessage(nextDialog);
+            console.log('entering while loop')
+            // this.sendMessage(nextDialog);
             const dialog = dialogsConfig[nextDialog.setNextStage];
+
             if (dialog.setNextStage !== null && dialog.setNextStage !== undefined) {
               this.sessionService.update(lead.id, { leadStage: dialog.setNextStage });
               const result: ConversationReply = {
@@ -94,7 +98,7 @@ export class ChatService {
 
 
 
-          this.sendMessage(nextDialog);
+          
           
           // return result;
         }
