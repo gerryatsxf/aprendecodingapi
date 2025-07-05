@@ -23,6 +23,7 @@ export class ChatService {
     // private readonly encryptionService: EncryptionService
   ) {}
   async sendMessage(reply: ConversationReply) {
+    console.log({ reply });
     const url = 'https://hook.us2.make.com/pmj3fg7g4r8ixh973byxnwjhd67vezqu';
     console.log('sending message');
     const response = await lastValueFrom(this.httpService.post(url, { reply }));
@@ -38,7 +39,7 @@ export class ChatService {
       replyOptions = Object.entries(dialog.replyOptions).map(([key, value]) => `${key}:${value}`);
     }
     const result: ConversationReply = {
-      text: dialog.text ,
+      text: dialog.message ,
       sender: 'bot',
       timestamp: new Date().toISOString(),
       replyOptions: replyOptions,
@@ -61,6 +62,7 @@ export class ChatService {
     const leadId = incomingMessageDto.chat.id.toString();
     this.sessionService.findByLeadId(leadId)
       .then((session) => {
+
         if (!session || session.status === 'processed') {
 
           // If no existing session or the session is from recurring lead, then create a new session
@@ -105,6 +107,7 @@ export class ChatService {
         }
       })
       .catch((error) => {
+        console.log('erroring finding session', error);
         console.error('Error finding lead:', error);
         this.sendMessage(this.getErrorReply(leadId));
       });
