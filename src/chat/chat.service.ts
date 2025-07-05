@@ -12,6 +12,7 @@ import { ISession } from 'src/session/entities/session.interface';
 import dialogsConfig from './dialogs.config'
 import { lastValueFrom } from 'rxjs';
 import { AuthService } from 'src/auth/auth.service';
+import { DialogConfig } from './dto/dialog-config.dto';
 @Injectable()
 export class ChatService {
   constructor(
@@ -27,150 +28,127 @@ export class ChatService {
     const response = await lastValueFrom(this.httpService.post(url, { reply }));
     console.log('Message sent:', response.data);
   }
-  readMessage(incomingMessageDto: TelegramMessageDto){
+
+  handleNewOrRecurrentLead(newSession: ISession) {
+  }
+
+  parseDialogToConversationReply(dialog: any, leadId: string): ConversationReply {
+    let replyOptions: string[] = [];
+    if (dialog.replyOptions && !Array.isArray(dialog.replyOptions)) {
+      replyOptions = Object.entries(dialog.replyOptions).map(([key, value]) => `${key}:${value}`);
+    }
+    const result: ConversationReply = {
+      text: dialog.text ,
+      sender: 'bot',
+      timestamp: new Date().toISOString(),
+      replyOptions: replyOptions,
+      leadId: leadId, // Include leadId in the reply
+    };
+    return result;
+  }
+
+  getErrorReply(leadId: string): ConversationReply {
+    const result: ConversationReply = {
+      text: 'Sorry, something went wrong.',
+      sender: 'bot',
+      timestamp: new Date().toISOString(),
+      replyOptions: [],
+      leadId: leadId, // Include leadId in the reply
+    };
+    return result
+  }
+  async readMessage(incomingMessageDto: TelegramMessageDto){
     const leadId = incomingMessageDto.chat.id.toString();
     this.sessionService.findByLeadId(leadId)
-      .then((lead) => {
-        if (!lead || lead.status === 'processed') {
-          if (lead) {
+      .then((session) => {
+        if (!session || session.status === 'processed') {
+
+          // If no existing session or the session is from recurring lead, then create a new session
+          if (session) {
             this.authService.deleteToken(leadId)
           }
-          return this.sessionService.createLeadSession(leadId)
+
+          this.sessionService.createLeadSession(leadId)
             .then((newSession) => {
               console.log('New session created:', newSession);
-              const nextDialog = this.getNextDialog(newSession,  incomingMessageDto.text);
-
-
-              const result: ConversationReply = {
-                text: nextDialog.text ,
-                sender: 'bot',
-                timestamp: new Date().toISOString(),
-                replyOptions: nextDialog.replyOptions || [],
-                leadId: leadId, // Include leadId in the reply
-              };
-              this.sendMessage(result);
+              const greetingDialog = this.getNextDialog(newSession,  incomingMessageDto.text);
+              const greetingReply: ConversationReply = this.parseDialogToConversationReply(greetingDialog, leadId);
+              this.sendMessage(greetingReply);
             })
             .catch((error) => {
               console.error('Error creating new session:', error);
-              const result: ConversationReply = {
-                text: 'Sorry, something went wrong.',
-                sender: 'bot',
-                timestamp: new Date().toISOString(),
-                replyOptions: [],
-                leadId: leadId, // Include leadId in the reply
-              };
-              return result;
+              this.sendMessage(this.getErrorReply(leadId));
             });
-        } else {
-          console.log('Existing session found:', lead );
-
-          let nextDialog = this.getNextDialog(lead,  incomingMessageDto.text);
-          this.sendMessage(nextDialog);
-          console.log(nextDialog)
-          console.log('--------------------------------')
-          while(nextDialog.setNextStage !== null && nextDialog.setNextStage !== undefined) {
-            // console.log(nextDialog)
-            console.log('entering while loop')
-            // this.sendMessage(nextDialog);
-            const dialog = dialogsConfig[nextDialog.setNextStage];
-
-            if (dialog.setNextStage !== null && dialog.setNextStage !== undefined) {
-              this.sessionService.update(lead.id, { leadStage: dialog.setNextStage });
-              const result: ConversationReply = {
-                text: dialog.message, 
-                replyOptions: dialog.replyOptions.map(option => `${option.value}:${option.nextStage}` ),
-                sender: 'bot',
-                timestamp: new Date().toISOString(),
-                leadId: lead.leadId, // Include leadId in the reply
-              };
-              nextDialog = result;}
-            else {
-            const result: ConversationReply = {
-              text: dialog.message, 
-              replyOptions: dialog.replyOptions.map(option => `${option.value}:${option.nextStage}` ),
-              sender: 'bot',
-              timestamp: new Date().toISOString(),
-              leadId: lead.leadId, // Include leadId in the reply
-            };
-            nextDialog = result;}
-            console.log(nextDialog)
-          }
 
 
+        } else if (session && session.status === 'processing') {
+          // Fix: Use an async IIFE to allow await inside the .then() callback
+          (async () => {
+            console.log('Existing session found:', session );
 
-          
-          
-          // return result;
+            let currentDialog = this.getCurrentDialog(session);
+
+            console.log({currentDialog})
+
+            while (currentDialog.next === 'stage') {
+              const nextStage = currentDialog.setNextStage;
+              await this.sessionService.update(session.id, { leadStage: nextStage });
+              currentDialog = dialogsConfig[nextStage];
+              const reply: ConversationReply = this.parseDialogToConversationReply(currentDialog, leadId);
+              await this.sendMessage(reply);
+            }
+            if (currentDialog.next === 'reply') {
+              const reply: ConversationReply = this.parseDialogToConversationReply(currentDialog, leadId);
+              await this.sendMessage(reply);
+            }
+          })();
         }
       })
       .catch((error) => {
         console.error('Error finding lead:', error);
-        return {
-          text: 'Sorry, something went wrong.',
-          sender: 'bot',
-          timestamp: new Date().toISOString(),
-          replyOptions: [],
-          leadId: leadId, // Include leadId in the reply
-        };
+        this.sendMessage(this.getErrorReply(leadId));
       });
   }
 
-  decideNextStep(text: string, currentStage: string, replyIdentifiers: string[]): string {
-    // Logic to decide the next step based on the text and current stage
-    // This is a placeholder implementation
-    // if (text.includes('tz_sub_s1')) {
-    
-    for (const replyIdentifier of replyIdentifiers){
-      const [message, nextStage] = text.split(':');
-      if (message.includes(replyIdentifier)) {
-        return nextStage; // Example: move to stage 2 for timezone
-      }
-    }
-    //   return 's2'; // Example: move to stage 2 for booking
-    // } else if (text.includes('cancel')) {
-    //   return 's3'; // Example: move to stage 3 for cancellation
-    // }
-    return currentStage; // Default to current stage if no match
+  getCurrentDialog(session: ISession): DialogConfig {
+    const currentStage = session.leadStage;
+    const dialog = dialogsConfig[currentStage] || { message: 'No dialog found for this stage.', replies: [], next: null, setNextStage: null };
+
+    return dialog;
   }
-  getNextDialog(session: ISession, incomingMessage: string): ConversationReply {
-    const currentStage = session.leadStage 
-    const replyIdentifiers = dialogsConfig[currentStage]?.replyIdentifiers || [];
-    const nextStage = this.decideNextStep(incomingMessage, currentStage, replyIdentifiers);
-    this.sessionService.update(session.id, { leadStage: nextStage });
-    const dialog = dialogsConfig[nextStage];
-    console.log({dialog})
 
-    if (!dialog) {
-      const emptyResult: ConversationReply = {
-        text: 'No further actions available.',
-        replyOptions: [],
-        sender: 'bot',
-        timestamp: new Date().toISOString(),
-        leadId: session.leadId, // Include leadId in the reply
-        setNextStage: dialog?.setNextStage || null,
-      };
-      return emptyResult;
+  getNextDialog(session: ISession, incomingMessage: string): DialogConfig {
+    
+    const currentStage = session.leadStage 
+    const dialog = dialogsConfig[currentStage] || { message: 'No dialog found for this stage.', replyOptions: [], setNextStage: null };
+
+    if(dialog.next !== null && dialog.next === 'reply') {
+      const replyIdentifiers = dialog.replies.identifiers || [];
+      const [message, nextStage] = incomingMessage.split(':');
+      for (const replyIdentifier of replyIdentifiers) {
+        if (message.includes(replyIdentifier)){
+          this.sessionService.update(session.id, { leadStage: nextStage });
+          return dialogsConfig[nextStage];
+        }
+      }
+    } else if (dialog.next !== null && dialog.next === 'stage') {
+      // If the dialog is set to 'stage', we need to update the session with the next stage
+      const nextStage = dialog.setNextStage;
+      this.sessionService.update(session.id, { leadStage: nextStage });
+      return dialogsConfig[nextStage];
     }
 
+    return this.getEmptyDialog();
+  }
 
-
-    // // Update the session with the next stage
-    // session.leadStage = 
-    
-    
-    
-    // dialog.nextStage || 'end';
-    // this.sessionService.update(session._id, session);
-    const result: ConversationReply = {
-      text: dialog.message, 
-      replyOptions: Array.isArray(dialog.replyOptions)
-        ? dialog.replyOptions.map(option => `${option.value}:${option.nextStage}`)
-        : [],
-      sender: 'bot',
-      timestamp: new Date().toISOString(),
-      leadId: session.leadId, // Include leadId in the reply
+  getEmptyDialog(): DialogConfig {
+    const emptyDialog: DialogConfig = {
+      message: '',  
+      replies: [],
+      next: null, // 'stage' or 'reply'
+      setNextStage: null, // Optional next stage to set
     };
-    return result
+    return emptyDialog;
   }
 
   // findAll() {
@@ -189,4 +167,4 @@ export class ChatService {
   //   return `This action removes a #${id} chat`;
   // }
 }
-
+  
