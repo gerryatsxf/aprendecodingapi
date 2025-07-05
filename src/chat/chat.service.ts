@@ -34,6 +34,7 @@ export class ChatService {
   }
 
   parseDialogToConversationReply(dialog: any, leadId: string): ConversationReply {
+    console.log('Parsing dialog to conversation reply:', dialog);
     let replyOptions: string[] = [];
     if (dialog.replyOptions && !Array.isArray(dialog.replyOptions)) {
       replyOptions = Object.entries(dialog.replyOptions).map(([key, value]) => `${key}:${value}`);
@@ -58,31 +59,29 @@ export class ChatService {
     };
     return result
   }
-  async readMessage(incomingMessageDto: TelegramMessageDto){
+  async readMessage(incomingMessageDto: TelegramMessageDto) {
     const leadId = incomingMessageDto.chat.id.toString();
     this.sessionService.findByLeadId(leadId)
-      .then((session) => {
+      .then(async (session) => {
 
         if (!session || session.status === 'processed') {
-
           // If no existing session or the session is from recurring lead, then create a new session
           if (session) {
-            this.authService.deleteToken(leadId)
+            session = await this.authService.deleteToken(leadId);
+            console.log('Previous session from recurrent lead has been set to stale:', session);
           }
 
-          this.sessionService.createLeadSession(leadId)
-            .then((newSession) => {
-              console.log('New session created:', newSession);
-              const greetingDialog = this.getNextDialog(newSession,  incomingMessageDto.text);
-              const greetingReply: ConversationReply = this.parseDialogToConversationReply(greetingDialog, leadId);
-              this.sendMessage(greetingReply);
-            })
-            .catch((error) => {
-              console.error('Error creating new session:', error);
-              this.sendMessage(this.getErrorReply(leadId));
-            });
-
-
+          try {
+            const newSession = await this.sessionService.createLeadSession(leadId);
+            console.log('New session created:', newSession);
+            const greetingDialog = this.getNextDialog(newSession, incomingMessageDto.text);
+            console.log('Greeting dialog:', greetingDialog);
+            const greetingReply: ConversationReply = this.parseDialogToConversationReply(greetingDialog, leadId);
+            await this.sendMessage(greetingReply);
+          } catch (error) {
+            console.error('Error creating new session:', error);
+            await this.sendMessage(this.getErrorReply(leadId));
+          }
         } else if (session && session.status === 'processing') {
           // Fix: Use an async IIFE to allow await inside the .then() callback
           (async () => {
@@ -123,10 +122,14 @@ export class ChatService {
   getNextDialog(session: ISession, incomingMessage: string): DialogConfig {
     
     const currentStage = session.leadStage 
-    const dialog = dialogsConfig[currentStage] || { message: 'No dialog found for this stage.', replyOptions: [], setNextStage: null };
+    console.log(dialogsConfig)
+    const dialog = dialogsConfig[currentStage] 
+    console.log({dialog})
 
-    if(dialog.next !== null && dialog.next === 'reply') {
-      const replyIdentifiers = dialog.replies.identifiers || [];
+    if(dialog.next === 'reply') {
+      
+      const replyIdentifiers = dialog.replies.identifiers
+      console.log({replyIdentifiers})
       const [message, nextStage] = incomingMessage.split(':');
       for (const replyIdentifier of replyIdentifiers) {
         if (message.includes(replyIdentifier)){
@@ -134,7 +137,7 @@ export class ChatService {
           return dialogsConfig[nextStage];
         }
       }
-    } else if (dialog.next !== null && dialog.next === 'stage') {
+    } else if (dialog.next === 'stage') {
       // If the dialog is set to 'stage', we need to update the session with the next stage
       const nextStage = dialog.setNextStage;
       this.sessionService.update(session.id, { leadStage: nextStage });
@@ -170,4 +173,7 @@ export class ChatService {
   //   return `This action removes a #${id} chat`;
   // }
 }
-  
+  // remove(id: number) {
+  //   return `This action removes a #${id} chat`;
+  // }
+
