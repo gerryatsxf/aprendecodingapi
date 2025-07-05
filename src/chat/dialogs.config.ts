@@ -10,10 +10,7 @@ const dialogsConfig = {
 },
 st1: { 
     message: 'Thats great! Lets get to it',
-    callback: (session) => {
-      session.leadStage = 'tz_sub_s1';
-      return session;
-    }
+    setNextStage: 'tz_sub_s1',
 },
   tz_sub_s1: { message: 'Please provide your timezone.' },
   tz_sub_retry_s1: { message: 'Please provide a valid timezone.' },

@@ -39,6 +39,8 @@ export class ChatService {
             .then((newSession) => {
               console.log('New session created:', newSession);
               const nextDialog = this.getNextDialog(newSession,  incomingMessageDto.text);
+
+
               const result: ConversationReply = {
                 text: nextDialog.text ,
                 sender: 'bot',
@@ -62,7 +64,21 @@ export class ChatService {
         } else {
           console.log('Existing session found:', lead );
 
-              const nextDialog = this.getNextDialog(lead,  incomingMessageDto.text);
+          let nextDialog = this.getNextDialog(lead,  incomingMessageDto.text);
+          while(nextDialog.setNextStage !== null && nextDialog.setNextStage !== undefined) {
+
+            this.sendMessage(nextDialog);
+            const dialog = dialogsConfig[nextDialog.setNextStage];
+            const result: ConversationReply = {
+              text: dialog.message, 
+              replyOptions: dialog.replyOptions.map(option => `${option.value}:${option.nextStage}` ),
+              sender: 'bot',
+              timestamp: new Date().toISOString(),
+              leadId: lead.leadId, // Include leadId in the reply
+            };
+            nextDialog = result;
+          }
+
 
 
           this.sendMessage(nextDialog);
@@ -114,9 +130,12 @@ export class ChatService {
         sender: 'bot',
         timestamp: new Date().toISOString(),
         leadId: session.leadId, // Include leadId in the reply
+        setNextStage: dialog?.setNextStage || null,
       };
       return emptyResult;
     }
+
+
 
     // // Update the session with the next stage
     // session.leadStage = 
