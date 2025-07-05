@@ -11,10 +11,12 @@ import { TelegramMessageDto } from './dto/telegram-message.dto';
 import { ISession } from 'src/session/entities/session.interface';
 import dialogsConfig from './dialogs.config'
 import { lastValueFrom } from 'rxjs';
+import { AuthService } from 'src/auth/auth.service';
 @Injectable()
 export class ChatService {
   constructor(
     private readonly httpService: HttpService,
+    private readonly authService: AuthService,  
     // private readonly freeSlotService: FreeSlotService,
     private readonly sessionService: SessionService,
     // private readonly encryptionService: EncryptionService
@@ -30,6 +32,9 @@ export class ChatService {
     this.sessionService.findByLeadId(leadId)
       .then((lead) => {
         if (!lead || lead.status === 'processed') {
+          if (lead.status === 'processed') {
+            this.authService.deleteToken(leadId)
+          }
           return this.sessionService.createLeadSession(leadId)
             .then((newSession) => {
               console.log('New session created:', newSession);

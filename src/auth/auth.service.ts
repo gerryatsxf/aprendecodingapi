@@ -43,7 +43,7 @@ export class AuthService {
     // This could involve invalidating the JWT or removing the session from the database
     const session = await this.sessionService.findByLeadId(leadId);
     console.log({session})
-    const udpated = await this.sessionService.update(session.id, { status: 'processed' });
+    const udpated = await this.sessionService.update(session.id, { status: 'processed', leadId: `${session.leadId}_stale` });
     console.log({ udpated });
     return { message: 'Session deleted successfully' };
   }

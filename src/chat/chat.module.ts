@@ -15,11 +15,13 @@ import { SessionService } from '../session/session.service';
 import { SessionSchema } from '../session/entities/session.schema';
 import { EncryptionModule } from '../encryption/encryption.module';
 import { EncryptionService } from '../encryption/encryption.service';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
     HttpModule,
-    SessionModule
+    SessionModule,
+    AuthModule,
   ],
   exports: [HttpModule],
   controllers: [ChatController],
