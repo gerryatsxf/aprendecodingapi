@@ -65,10 +65,22 @@ export class ChatService {
           console.log('Existing session found:', lead );
 
           let nextDialog = this.getNextDialog(lead,  incomingMessageDto.text);
+          console.log(nextDialog)
           while(nextDialog.setNextStage !== null && nextDialog.setNextStage !== undefined) {
-
+            // console.log(nextDialog)
             this.sendMessage(nextDialog);
             const dialog = dialogsConfig[nextDialog.setNextStage];
+            if (dialog.setNextStage !== null && dialog.setNextStage !== undefined) {
+              this.sessionService.update(lead.id, { leadStage: dialog.setNextStage });
+              const result: ConversationReply = {
+                text: dialog.message, 
+                replyOptions: dialog.replyOptions.map(option => `${option.value}:${option.nextStage}` ),
+                sender: 'bot',
+                timestamp: new Date().toISOString(),
+                leadId: lead.leadId, // Include leadId in the reply
+              };
+              nextDialog = result;}
+            else {
             const result: ConversationReply = {
               text: dialog.message, 
               replyOptions: dialog.replyOptions.map(option => `${option.value}:${option.nextStage}` ),
@@ -76,7 +88,8 @@ export class ChatService {
               timestamp: new Date().toISOString(),
               leadId: lead.leadId, // Include leadId in the reply
             };
-            nextDialog = result;
+            nextDialog = result;}
+            console.log(nextDialog)
           }
 
 
