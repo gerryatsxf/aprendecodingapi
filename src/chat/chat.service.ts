@@ -146,7 +146,9 @@ export class ChatService {
     // this.sessionService.update(session._id, session);
     const result: ConversationReply = {
       text: dialog.message, 
-      replyOptions: dialog.replyOptions.map(option => `${option.value}:${option.nextStage}` ),
+      replyOptions: Array.isArray(dialog.replyOptions)
+        ? dialog.replyOptions.map(option => `${option.value}:${option.nextStage}`)
+        : [],
       sender: 'bot',
       timestamp: new Date().toISOString(),
       leadId: session.leadId, // Include leadId in the reply
