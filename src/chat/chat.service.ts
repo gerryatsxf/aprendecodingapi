@@ -29,7 +29,7 @@ export class ChatService {
     const leadId = incomingMessageDto.chat.id.toString();
     return this.sessionService.findByLeadId(leadId)
       .then((lead) => {
-        if (!lead) {
+        if (!lead || lead.status === 'processed') {
           return this.sessionService.createLeadSession(leadId)
             .then((newSession) => {
               console.log('New session created:', newSession);
@@ -56,21 +56,12 @@ export class ChatService {
             });
         } else {
           console.log('Existing session found:', lead );
-          if( lead.status === 'processed') {
-              console.log('New session created:', lead);
+
               const nextDialog = this.getNextDialog(lead,  incomingMessageDto.text);
-              const result: ConversationReply = {
-                text: nextDialog.text ,
-                sender: 'bot',
-                timestamp: new Date().toISOString(),
-                replyOptions: nextDialog.replyOptions || [],
-                leadId: leadId, // Include leadId in the reply
-              };
-              return result;
-          } else if (lead.status === 'processing') {
-          const nextDialog = this.getNextDialog(lead,  incomingMessageDto.text);
+
+
           this.sendMessage(nextDialog);
-          }
+          
           // return result;
         }
       })
