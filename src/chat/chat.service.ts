@@ -25,9 +25,9 @@ export class ChatService {
     const response = await lastValueFrom(this.httpService.post(url, { reply }));
     console.log('Message sent:', response.data);
   }
-  readMessage(incomingMessageDto: TelegramMessageDto): Promise<ConversationReply> {
+  readMessage(incomingMessageDto: TelegramMessageDto){
     const leadId = incomingMessageDto.chat.id.toString();
-    return this.sessionService.findByLeadId(leadId)
+    this.sessionService.findByLeadId(leadId)
       .then((lead) => {
         if (!lead || lead.status === 'processed') {
           return this.sessionService.createLeadSession(leadId)
@@ -41,7 +41,7 @@ export class ChatService {
                 replyOptions: nextDialog.replyOptions || [],
                 leadId: leadId, // Include leadId in the reply
               };
-              return result;
+              this.sendMessage(result);
             })
             .catch((error) => {
               console.error('Error creating new session:', error);
