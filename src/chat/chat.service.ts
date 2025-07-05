@@ -32,7 +32,7 @@ export class ChatService {
     this.sessionService.findByLeadId(leadId)
       .then((lead) => {
         if (!lead || lead.status === 'processed') {
-          if (lead.status === 'processed') {
+          if (lead) {
             this.authService.deleteToken(leadId)
           }
           return this.sessionService.createLeadSession(leadId)
