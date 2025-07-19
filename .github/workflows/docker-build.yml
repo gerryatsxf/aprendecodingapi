@@ -1,0 +1,46 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+jobs:
+
+  build:
+    runs-on: self-hosted
+    environment: dev  # This targets the 'dev' environment
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Stop and remove previous container if exists
+      run: |
+        # Stop and remove any containers that might conflict
+        docker stop aprendecoding_api || true
+        docker rm aprendecoding_api || true
+        docker stop aprendecoding_api_dev || true
+        docker rm aprendecoding_api_dev || true
+        
+        # Also stop any container using port 3002
+        docker ps --filter "publish=3002" -q | xargs -r docker stop || true
+        docker ps -a --filter "publish=3002" -q | xargs -r docker rm || true
+
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag aprendecoding:latest
+
+    - name: Run Docker container on port 3002
+      if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
+      run: |
+        docker run -d --name aprendecoding_api -p 3002:3002 \
+          -e DOCKER_ENV="true" \
+          -e NODE_ENV="production" \
+          -e PORT="3002" \
+          -e MONGO_DB_ATLAS_CONNECTION_STRING="${{ secrets.MONGO_DB_ATLAS_CONNECTION_STRING }}" \
+          -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+          -e STRIPE_SECRET_KEY="${{ secrets.STRIPE_SECRET_KEY }}" \
+          -e STRIPE_WEBHOOK_SECRET="${{ secrets.STRIPE_WEBHOOK_SECRET }}" \
+          -e NYLAS_CLIENT_ID="${{ secrets.NYLAS_CLIENT_ID }}" \
+          -e NYLAS_CLIENT_SECRET="${{ secrets.NYLAS_CLIENT_SECRET }}" \
+          -e NYLAS_API_KEY="${{ secrets.NYLAS_API_KEY }}" \
+          aprendecoding:latest

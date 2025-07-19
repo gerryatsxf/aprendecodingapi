@@ -24,7 +24,66 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+AprendeCoding API - A NestJS application for managing coding tutorials and sessions.
+
+## Environment Configuration
+
+This application uses different environment variable loading strategies depending on the deployment environment:
+
+- **Local Development**: Loads environment variables from `env/dev.env` file
+- **Docker/Production**: Uses environment variables passed directly to the container
+
+## Installation
+
+```bash
+$ npm install
+```
+
+## Local Development Setup
+
+1. Copy the example environment file:
+```bash
+$ cp env/dev.env.example env/dev.env
+```
+
+2. Edit `env/dev.env` with your local configuration values
+
+## Running the app
+
+```bash
+# development (loads from env/dev.env)
+$ npm run start
+
+# watch mode (loads from env/dev.env)
+$ npm run start:dev
+
+# production mode (uses system environment variables)
+$ npm run start:prod
+
+# production mode with local env file
+$ npm run start:prod:local
+```
+
+## Docker Deployment
+
+Build and run with Docker:
+
+```bash
+# Build the image
+$ docker build -t aprendecoding:latest .
+
+# Run with environment variables
+$ docker run -d --name aprendecoding_api -p 3002:3002 \
+  -e DOCKER_ENV="true" \
+  -e MONGO_DB_ATLAS_CONNECTION_STRING="your_mongo_connection_string" \
+  -e JWT_SECRET="your_jwt_secret" \
+  -e STRIPE_SECRET_KEY="your_stripe_key" \
+  -e STRIPE_WEBHOOK_SECRET="your_webhook_secret" \
+  -e NYLAS_CLIENT_ID="your_nylas_client_id" \
+  -e NYLAS_CLIENT_SECRET="your_nylas_client_secret" \
+  -e NYLAS_API_KEY="your_nylas_api_key" \
+  aprendecoding:latest
+```
 
 ## Installation
 

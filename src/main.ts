@@ -5,7 +5,11 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as fs from 'fs';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
-dotenv.config({ path: path.resolve(process.cwd(), 'env/dev.env') });
+
+// Only load .env file if not running in Docker
+if (!process.env.DOCKER_ENV) {
+  dotenv.config({ path: path.resolve(process.cwd(), 'env/dev.env') });
+}
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {

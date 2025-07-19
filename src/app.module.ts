@@ -29,7 +29,7 @@ import { ChatModule } from './chat/chat.module';
     DateTimeModule,
     SessionModule,
     ConfigModule.forRoot({
-      envFilePath: path.resolve(__dirname, '../env/dev.env'),
+      envFilePath: process.env.DOCKER_ENV ? undefined : path.resolve(__dirname, '../env/dev.env'),
       isGlobal: true,
     }),
     MongooseModule.forRootAsync({
