@@ -17,7 +17,6 @@ jobs:
     - name: Stop and remove all existing containers
       run: |
         # Stop and remove all related containers
-        docker-compose down --remove-orphans || true
         docker stop aprendecoding_api aprendecoding_mongodb aprendecodingapi || true
         docker rm aprendecoding_api aprendecoding_mongodb aprendecodingapi || true
         
@@ -27,11 +26,19 @@ jobs:
         docker ps --filter "publish=27017" -q | xargs -r docker stop || true
         docker ps -a --filter "publish=27017" -q | xargs -r docker rm || true
         
+        # Remove existing network
+        docker network rm aprendecoding_network || true
+        
         # Clean up unused images to save space
         docker image prune -f || true
 
-    - name: Build Docker images
-      run: docker-compose build api
+    - name: Create Docker network
+      run: |
+        # Create network for containers to communicate
+        docker network create aprendecoding_network || true
+
+    - name: Build Docker image
+      run: docker build . --file Dockerfile --tag aprendecoding:latest
 
     - name: Deploy to production
       if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
@@ -47,21 +54,52 @@ jobs:
         CREATE_MEETING_URL: ${{ secrets.CREATE_MEETING_URL }}
         VONAGE_JWT_365_DAYS: ${{ secrets.VONAGE_JWT_365_DAYS }}
       run: |
-        # Start MongoDB and API services
-        docker-compose up -d mongodb api
+        # Start MongoDB container first
+        docker run -d --name aprendecoding_mongodb \
+          --network aprendecoding_network \
+          -p 27017:27017 \
+          -e MONGO_INITDB_ROOT_USERNAME=admin_root \
+          -e MONGO_INITDB_ROOT_PASSWORD=admin_root \
+          -e MONGO_INITDB_DATABASE=aprendecoding \
+          mongo:7.0
+        
+        # Wait for MongoDB to be ready
+        echo "Waiting for MongoDB to start..."
+        sleep 15
+        
+        # Start API container
+        docker run -d --name aprendecoding_api \
+          --network aprendecoding_network \
+          -p 3002:3002 \
+          -e DOCKER_ENV=true \
+          -e NODE_ENV=production \
+          -e PORT=3002 \
+          -e MONGO_DB_ATLAS_CONNECTION_STRING="mongodb://admin_root:admin_root@aprendecoding_mongodb:27017/aprendecoding?authSource=admin" \
+          -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+          -e JWT_EXPIRES_IN="${{ vars.JWT_EXPIRES_IN }}" \
+          -e STRIPE_SECRET_KEY="${{ secrets.STRIPE_SECRET_KEY }}" \
+          -e STRIPE_PAYMENT_SUCCESS_WEBHOOK_SECRET_KEY="${{ secrets.STRIPE_PAYMENT_SUCCESS_WEBHOOK_SECRET_KEY }}" \
+          -e NYLAS_MAIN_ACCOUNT_EMAIL="${{ vars.NYLAS_MAIN_ACCOUNT_EMAIL }}" \
+          -e NYLAS_CLIENT_ID="${{ secrets.NYLAS_CLIENT_ID }}" \
+          -e NYLAS_CLIENT_SECRET="${{ secrets.NYLAS_CLIENT_SECRET }}" \
+          -e NYLAS_MAIN_ACCOUNT_ACCESS_TOKEN="${{ secrets.NYLAS_MAIN_ACCOUNT_ACCESS_TOKEN }}" \
+          -e CREATE_MEETING_URL="${{ secrets.CREATE_MEETING_URL }}" \
+          -e VONAGE_JWT_365_DAYS="${{ secrets.VONAGE_JWT_365_DAYS }}" \
+          aprendecoding:latest
         
         # Wait for services to be healthy
-        echo "Waiting for services to start..."
+        echo "Waiting for API to start..."
         sleep 30
         
-        # Check if containers are running
-        docker-compose ps
+        # Show running containers
+        echo "=== Running Containers ==="
+        docker ps
         
         # Show logs for debugging
         echo "=== MongoDB Logs ==="
-        docker-compose logs mongodb
+        docker logs aprendecoding_mongodb --tail 20
         echo "=== API Logs ==="
-        docker-compose logs api
+        docker logs aprendecoding_api --tail 20
 
     - name: Health check
       if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
