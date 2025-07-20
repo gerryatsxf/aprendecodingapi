@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AppService } from './app.service';
+import { AppController } from './app.controller';
 import { PaymentModule } from './payment/payment.module';
 import { MeetingModule } from './meeting/meeting.module';
 import { NotificationModule } from './notification/notification.module';
@@ -53,7 +54,7 @@ import { ChatModule } from './chat/chat.module';
     CartModule,
     ChatModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}

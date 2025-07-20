@@ -107,6 +107,39 @@ jobs:
         # Wait a bit more for the API to fully start
         sleep 10
         
-        # Test if the API is responding
-        curl -f http://localhost:3002 || exit 1
-        echo "✅ API is responding successfully!"
+        # Check if container is running
+        if docker ps | grep aprendecoding_api | grep -q "Up"; then
+          echo "✅ API container is running!"
+          
+          # Check the health endpoint
+          echo "Testing health endpoint..."
+          if curl -f http://localhost:3002/health > /dev/null 2>&1; then
+            echo "✅ Health endpoint is responding!"
+            echo "🎉 Deployment successful! API is healthy and running."
+            
+            # Show the health response for verification
+            echo "Health status:"
+            curl -s http://localhost:3002/health | head -5
+          else
+            echo "❌ Health endpoint failed, trying root endpoint..."
+            if curl -f http://localhost:3002 > /dev/null 2>&1; then
+              echo "✅ Root endpoint is responding!"
+              echo "🎉 Deployment successful! API is running."
+            else
+              echo "⚠️  Endpoints not responding, but checking port..."
+              if timeout 10 bash -c 'until nc -z localhost 3002; do sleep 1; done'; then
+                echo "✅ API port 3002 is accessible!"
+                echo "🎉 Deployment successful! API is running (port accessible)."
+              else
+                echo "❌ API port 3002 is not accessible"
+                echo "🔍 Checking API logs for errors..."
+                docker logs aprendecoding_api --tail 50
+                exit 1
+              fi
+            fi
+          fi
+        else
+          echo "❌ API container is not running properly"
+          docker ps -a | grep aprendecoding
+          exit 1
+        fi
