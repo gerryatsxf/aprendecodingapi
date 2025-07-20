@@ -38,9 +38,16 @@ jobs:
           -e PORT="3002" \
           -e MONGO_DB_ATLAS_CONNECTION_STRING="${{ secrets.MONGO_DB_ATLAS_CONNECTION_STRING }}" \
           -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+          -e JWT_EXPIRES_IN="${{ vars.JWT_EXPIRES_IN }}" \
           -e STRIPE_SECRET_KEY="${{ secrets.STRIPE_SECRET_KEY }}" \
           -e STRIPE_WEBHOOK_SECRET="${{ secrets.STRIPE_WEBHOOK_SECRET }}" \
+          -e STRIPE_API_URL="${{ vars.STRIPE_API_URL }}" \
+          -e STRIPE_PAYMENT_SUCCESS_WEBHOOK_SECRET_KEY="${{ secrets.STRIPE_PAYMENT_SUCCESS_WEBHOOK_SECRET_KEY }}" \
+          -e NYLAS_MAIN_ACCOUNT_EMAIL="${{ vars.NYLAS_MAIN_ACCOUNT_EMAIL }}" \
           -e NYLAS_CLIENT_ID="${{ secrets.NYLAS_CLIENT_ID }}" \
           -e NYLAS_CLIENT_SECRET="${{ secrets.NYLAS_CLIENT_SECRET }}" \
-          -e NYLAS_API_KEY="${{ secrets.NYLAS_API_KEY }}" \
+          -e NYLAS_MAIN_ACCOUNT_ACCESS_TOKEN="${{ secrets.NYLAS_MAIN_ACCOUNT_ACCESS_TOKEN }}" \
+          -e VONAGE_API_BASE_URL="${{ vars.VONAGE_API_BASE_URL }}" \
+          -e VONAGE_JWT_365_DAYS="${{ secrets.VONAGE_JWT_365_DAYS }}" \
+          -e CREATE_MEETING_URL="${{ secrets.CREATE_MEETING_URL }}" \
           aprendecoding:latest
