@@ -48,13 +48,24 @@ $ cp env/dev.env.example env/dev.env
 
 2. Edit `env/dev.env` with your local configuration values
 
+3. Start the local MongoDB database:
+```bash
+$ docker run -d --name aprendecoding_mongodb \
+  -p 27017:27017 \
+  -e MONGO_INITDB_ROOT_USERNAME=admin_root \
+  -e MONGO_INITDB_ROOT_PASSWORD=admin_root \
+  -e MONGO_INITDB_DATABASE=aprendecoding \
+  -v mongodb_data:/data/db \
+  mongo:7.0
+```
+
 ## Running the app
 
 ```bash
-# development (loads from env/dev.env)
+# development (loads from env/dev.env with local MongoDB)
 $ npm run start
 
-# watch mode (loads from env/dev.env)
+# watch mode (loads from env/dev.env with local MongoDB)
 $ npm run start:dev
 
 # production mode (uses system environment variables)
@@ -62,6 +73,36 @@ $ npm run start:prod
 
 # production mode with local env file
 $ npm run start:prod:local
+```
+
+## Docker Compose Development
+
+For a complete local development environment with hot reload:
+
+```bash
+# Start MongoDB + API in development mode
+$ docker-compose --profile dev up -d
+
+# View logs
+$ docker-compose logs -f
+
+# Stop services
+$ docker-compose down
+```
+
+## Docker Compose Production
+
+For a complete production environment locally:
+
+```bash
+# Start MongoDB + API in production mode
+$ docker-compose --profile production up -d
+
+# View logs
+$ docker-compose logs -f
+
+# Stop services
+$ docker-compose down
 ```
 
 ## Docker Deployment

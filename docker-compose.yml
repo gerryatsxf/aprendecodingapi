@@ -1,6 +1,50 @@
 version: '3.9'
 
 services:
+  # MongoDB Database (Production)
+  mongodb:
+    image: mongo:7.0
+    container_name: aprendecoding_mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin_root
+      MONGO_INITDB_ROOT_PASSWORD: admin_root
+      MONGO_INITDB_DATABASE: aprendecoding
+    networks:
+      - aprendecoding_network
+
+  # API Application (Production)
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aprendecoding_api
+    restart: unless-stopped
+    ports:
+      - "3002:3002"
+    environment:
+      - DOCKER_ENV=true
+      - NODE_ENV=production
+      - PORT=3002
+      - MONGO_DB_ATLAS_CONNECTION_STRING=mongodb://admin_root:admin_root@mongodb:27017/aprendecoding?authSource=admin
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_PAYMENT_SUCCESS_WEBHOOK_SECRET_KEY=${STRIPE_PAYMENT_SUCCESS_WEBHOOK_SECRET_KEY}
+      - NYLAS_MAIN_ACCOUNT_EMAIL=${NYLAS_MAIN_ACCOUNT_EMAIL}
+      - NYLAS_CLIENT_ID=${NYLAS_CLIENT_ID}
+      - NYLAS_CLIENT_SECRET=${NYLAS_CLIENT_SECRET}
+      - NYLAS_MAIN_ACCOUNT_ACCESS_TOKEN=${NYLAS_MAIN_ACCOUNT_ACCESS_TOKEN}
+      - CREATE_MEETING_URL=${CREATE_MEETING_URL}
+      - VONAGE_JWT_365_DAYS=${VONAGE_JWT_365_DAYS}
+    depends_on:
+      - mongodb
+    networks:
+      - aprendecoding_network
+
+  # Development server (for local development)
   devserver:
     build:
       context: .
@@ -14,3 +58,7 @@ services:
       - /app/node_modules
     profiles:
       - dev
+
+networks:
+  aprendecoding_network:
+    driver: bridge
