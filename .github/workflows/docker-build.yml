@@ -23,8 +23,8 @@ jobs:
         # Clean up any containers using our ports
         docker ps --filter "publish=3002" -q | xargs -r docker stop || true
         docker ps -a --filter "publish=3002" -q | xargs -r docker rm || true
-        docker ps --filter "publish=27017" -q | xargs -r docker stop || true
-        docker ps -a --filter "publish=27017" -q | xargs -r docker rm || true
+        docker ps --filter "publish=27018" -q | xargs -r docker stop || true
+        docker ps -a --filter "publish=27018" -q | xargs -r docker rm || true
         
         # Remove existing network
         docker network rm aprendecoding_network || true
@@ -57,7 +57,7 @@ jobs:
         # Start MongoDB container first
         docker run -d --name aprendecoding_mongodb \
           --network aprendecoding_network \
-          -p 27017:27017 \
+          -p 27018:27017 \
           -e MONGO_INITDB_ROOT_USERNAME=admin_root \
           -e MONGO_INITDB_ROOT_PASSWORD=admin_root \
           -e MONGO_INITDB_DATABASE=aprendecoding \
